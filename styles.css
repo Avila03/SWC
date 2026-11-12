@@ -10,3 +10,13 @@
 .product-description{font-size:12px!important;line-height:1.6;color:#687167;max-width:260px}
 @media(max-width:1040px){.product-controls{justify-content:flex-start}}
 @media(max-width:700px){.product-info{align-items:flex-start}.product-controls{align-items:start;flex-direction:column}.product-variant{min-width:124px}}
+
+
+/* Lançamento do catálogo real (com dados de variantes ainda pendentes). */
+.catalog-loading{grid-column:1/-1;display:block;margin:0;padding:60px 22px;border:1px solid #cfc7b5;text-align:center;color:#5e6a5e;font:italic 22px "Playfair Display",serif}
+.product-prelaunch{margin:0;color:#6d6958;font-size:11px;font-weight:700;line-height:1.5;max-width:165px}
+.add-btn.product-disabled,.add-btn:disabled{cursor:not-allowed;opacity:.65;background:#d5d1c5;color:#475747;border-color:#aeb4a7}
+.product-details{min-width:0;max-width:100%}
+.product-details h3{overflow-wrap:anywhere}
+@media(max-width:700px){.product-info{gap:16px}.product-controls{max-width:160px;flex-shrink:0}.product-details h3{font-size:19px}}
+@media(max-width:390px){.product-info{flex-direction:column}.product-controls{max-width:100%;flex-direction:row;align-items:center;justify-content:space-between;width:100%}.product-prelaunch{max-width:175px}}
