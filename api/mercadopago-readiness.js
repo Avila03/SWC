@@ -1,4 +1,5 @@
-// SWC — estado de preparação do Mercado Pago.
+// SWC — estado de preparação das integrações para checkout.
+const { isConfigured: supabaseConfigured } = require("../lib/supabase-server");
 // Sem transações; não retorna tokens, chaves ou dados da conta.
 module.exports = async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
@@ -18,6 +19,8 @@ module.exports = async function handler(req, res) {
   return res.status(200).json({
     provider: "mercado_pago",
     mode: "setup",
+    supabaseConfigured: supabaseConfigured(),
+    guboOrdersConfigured: Boolean(process.env.GUBO_ORDERS_API_KEY),
     testAccessTokenConfigured: accessTokenConfigured,
     webhookSecretConfigured,
     checkoutEnabled: false,
