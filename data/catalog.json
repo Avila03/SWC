@@ -11,7 +11,8 @@
       "active": true,
       "variants": [],
       "source": "gubo-studio",
-      "productLinkStatus": "pending"
+      "productLinkStatus": "pending",
+      "guboProductCode": "P261111208"
     },
     {
       "id": "camiseta-oversized-a604793d",
@@ -23,7 +24,8 @@
       "active": true,
       "variants": [],
       "source": "gubo-studio",
-      "productLinkStatus": "pending"
+      "productLinkStatus": "pending",
+      "guboProductCode": "P261111200"
     }
   ]
 }
