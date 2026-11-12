@@ -26,6 +26,21 @@ A SWC tem a Gubo conectada para catálogo, variantes e frete; o checkout SWC e o
 - Sincronizar status/rastreamento Gubo com verificação de autenticidade e segurança.
 - Testar fluxo completo, cancelar/reembolsar/falhar e somente então liberar produção.
 
+## Checkout Pix de teste (implementado em 12/11/2026, desligado por padrão)
+
+`POST /api/checkout-test`:
+
+1. Valida dados (nome, e-mail, telefone, CPF com dígitos verificadores, endereço, UF e consentimento).
+2. Recalcula preços pelo `data/catalog.json` e revalida variantes e frete diretamente na Gubo. Preço e frete do navegador são ignorados.
+3. Cria o pedido via `swc_create_order` (transacional e idempotente).
+4. Cria a order Pix no Mercado Pago (`/v1/orders`, `processing_mode: automatic`, expiração `PT30M`) com `X-Idempotency-Key: swc-pix-<order_id>` e `MP_TEST_ACCESS_TOKEN`.
+5. Registra a cobrança via `swc_record_payment` e devolve QR Code, copia e cola e link.
+6. Repetir a mesma chave devolve o mesmo Pix sem nova cobrança.
+
+Ligar: no Vercel, `SWC_TEST_CHECKOUT` = `enabled` (Production) e novo deploy. Desligar: remover a variável. O formulário (`checkout-test.js`) só aparece quando `/api/mercadopago-readiness` informa `testCheckoutEnabled: true`.
+
+O pedido fica em `awaiting_payment` até o webhook assinado confirmar o pagamento. Nenhum pedido é enviado à Gubo nesta etapa.
+
 **Estado do site nesta etapa:** catálogo e cotação da Gubo em teste disponíveis; botão de pagamento desabilitado por segurança.
 
 Documentação:

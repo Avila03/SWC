@@ -37,7 +37,20 @@ A camada reutilizável em `lib/supabase-server.js` restringe a conexão ao host 
 
 O status público de preparação é exibido por `GET /api/mercadopago-readiness`. Esse endpoint não devolve chaves nem detalhes do banco.
 
-## Próxima etapa — registrar pedidos e integrar Pix em ambiente de testes
+## Pedidos transacionais e Pix de teste (12/11/2026)
+
+Migração: `swc_checkout_order_rpc`.
+
+| Função | O que faz |
+|---|---|
+| `public.swc_create_order(jsonb)` | Cria pedido + itens + evento `order_created` numa única transação. Idempotente por `checkout_idempotency_key`: repetir a chave devolve o mesmo pedido. Recalcula o subtotal a partir dos itens e recusa divergência (`subtotal_mismatch`). |
+| `public.swc_record_payment(jsonb)` | Registra a cobrança Pix (`swc_payments`), confere o valor com o total do pedido (`amount_mismatch`) e move o pedido de `draft` para `awaiting_payment`, com evento `pix_created`. Idempotente por chave. |
+
+Execução liberada só para `service_role` (revogada de `public`, `anon` e `authenticated`). Testadas numa transação revertida: criação, repetição da mesma chave, registro e repetição do pagamento. O banco continua com zero pedidos.
+
+Endpoint: `POST /api/checkout-test` (ver `docs/PAGAMENTOS.md`). Fica desligado até `SWC_TEST_CHECKOUT=enabled` no Vercel.
+
+## Próxima etapa — registrar pedidos e integrar Pix em ambiente de testes (itens 1 a 4 implementados em 12/11/2026)
 
 1. Definir uma criação de pedido transacional e idempotente, validando SKUs e preços no backend antes de gravar registros.
 2. Implementar formulário de entrega da SWC com validação e armazenamento protegido de dados pessoais, sem CPF ou endereço em `localStorage`.

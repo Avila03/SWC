@@ -25,6 +25,7 @@ module.exports = async function handler(req, res) {
     webhookSecretConfigured,
     checkoutEnabled: false,
     ordersEnabled: false,
+    testCheckoutEnabled: process.env.SWC_TEST_CHECKOUT === "enabled",
     nextStep: !accessTokenConfigured ? "configure_test_credentials" :
       !webhookSecretConfigured ? "configure_webhook_signature" : "implement_checkout"
   });
