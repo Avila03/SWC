@@ -283,3 +283,16 @@ body{background:var(--g-deep)}
   .g-collection .add-btn{min-height:38px;font-size:8.5px;letter-spacing:.12em;padding:10px 4px}
 }
 @media(max-width:760px){.g-collection .product-info .product-price{color:var(--g-gold)}}
+/* Abas de coleção */
+.g-tabs{display:flex;gap:clamp(22px,4vw,48px);border-bottom:1px solid var(--g-hair);margin:-10px 0 clamp(36px,5vw,56px);overflow-x:auto;scrollbar-width:none}
+.g-tabs[hidden]{display:none}
+.g-tab{position:relative;background:none;border:0;cursor:pointer;padding:0 0 16px;display:flex;align-items:baseline;gap:10px;white-space:nowrap;font:400 clamp(20px,2vw,26px) var(--g-serif);color:var(--g-mute);transition:color .25s}
+.g-tab small{font:600 8.5px var(--g-sans);letter-spacing:.24em;text-transform:uppercase;color:var(--g-olive);filter:brightness(1.4)}
+.g-tab::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--g-gold);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.g-tab:hover{color:var(--g-ivory)}
+.g-tab[aria-selected="true"]{color:var(--g-ivory)}
+.g-tab[aria-selected="true"]::after{transform:scaleX(1)}
+.g-tab:focus-visible{outline:1px solid var(--g-gold);outline-offset:6px}
+.g-soon{font:italic 400 clamp(20px,2.2vw,28px)/1.4 var(--g-serif);color:var(--g-mute);padding:clamp(50px,8vw,110px) 0;border:1px solid var(--g-hair);text-align:center;margin:0}
+.g-soon[hidden],.g-products[hidden]{display:none!important}
+.g-collection .product-card[hidden]{display:none}

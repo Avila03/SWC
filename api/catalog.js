@@ -77,12 +77,18 @@ function guboImages(product) {
   const primary = safeImage(product?.imagem_url);
   return primary ? [...found.filter(u => u !== primary), primary] : found;
 }
+function collections() {
+  return (Array.isArray(catalog.collections)?catalog.collections:[])
+    .filter(c=>c&&typeof c.id==="string"&&typeof c.name==="string")
+    .map(c=>({id:c.id,name:c.name,status:c.status==="soon"?"soon":"open"}));
+}
 function localProduct(p) {
   return {
     id:p.id,name:p.name,category:p.category||"SWC",
     description:p.description||"",priceCents:p.priceCents,
     images:(p.images||[]).map(safeImage).filter(Boolean).slice(0,8),
     variants:[],variantStatus:"pending",
+    collection:typeof p.collection==="string"?p.collection:null,
     source:"swc"
   };
 }
@@ -99,7 +105,7 @@ module.exports = async function handler(req,res) {
   const key = process.env.GUBO_API_KEY;
   if (!key || !/^gubo_(test|live)_/.test(key)) {
     res.setHeader("Cache-Control","no-store");
-    return res.status(200).json({version:2,source:"unavailable",checkoutEnabled:false,products:configured.map(localProduct)});
+    return res.status(200).json({version:2,source:"unavailable",checkoutEnabled:false,collections:collections(),products:configured.map(localProduct)});
   }
   try {
     const [guboProducts,guboVariants] = await Promise.all([
@@ -140,13 +146,13 @@ module.exports = async function handler(req,res) {
     res.setHeader("Cache-Control","public, max-age=0, s-maxage=300, stale-while-revalidate=600");
     return res.status(200).json({
       version:2,source:"gubo",mode:key.startsWith("gubo_test_")?"test":"production",
-      checkoutEnabled:false,products
+      checkoutEnabled:false,collections:collections(),products
     });
   } catch(error) {
     // Falha fechada: sem catálogo da Gubo, não habilitar compras.
     res.setHeader("Cache-Control","no-store");
     return res.status(200).json({
-      version:2,source:"unavailable",checkoutEnabled:false,products:configured.map(localProduct)
+      version:2,source:"unavailable",checkoutEnabled:false,collections:collections(),products:configured.map(localProduct)
     });
   }
 };

@@ -172,7 +172,7 @@
   }
   const SIZE_ORDER = ["PP","P","M","G","GG","XG","XGG","EG","EGG"];
   const rank = size => { const i = SIZE_ORDER.indexOf(String(size || "").toUpperCase()); return i < 0 ? 99 : i; };
-  function productCard(product, index) {
+  function productCard(product, index, collectionName) {
     const variants = (Array.isArray(product.variants) ? [...product.variants] : [])
       .sort((a, b) => String(a.color).localeCompare(String(b.color)) || rank(a.size) - rank(b.size));
     const card = element("article", "product-card");
@@ -220,7 +220,7 @@
     }
     const info = element("div", "product-info");
     const details = element("div", "product-details");
-    details.append(element("span", "product-number", number + " · COLEÇÃO 01"));
+    details.append(element("span", "product-number", number + " · " + String(collectionName || "SWC").toUpperCase()));
     details.append(element("h3", "", product.name));
     // Ficha técnica no estilo de galeria: só dados reais do catálogo.
     const sheet = element("dl", "product-sheet");
@@ -262,7 +262,60 @@
     }
     info.append(details,controls);
     card.append(visual,info);
+    card.dataset.collection = product.collection || "";
     return card;
+  }
+  // Uma aba por coleção. Coleção sem peças e marcada como "soon" mostra aviso de lançamento.
+  function renderCollections(grid, list) {
+    const valid = list.filter(c => c && typeof c.id === "string" && typeof c.name === "string");
+    const groups = valid.length ? valid : [{ id: "", name: "Coleção", status: "open" }];
+    const cards = [];
+    for (const group of groups) {
+      const items = catalog.filter(p => valid.length ? p.collection === group.id : true);
+      items.forEach((product, i) => cards.push(productCard(product, i, group.name)));
+    }
+    grid.replaceChildren(...cards);
+    const tabs = $(".g-tabs"), soon = $(".g-soon");
+    if (!tabs || groups.length < 2) return;
+    const select = id => {
+      const group = groups.find(g => g.id === id) || groups[0];
+      tabs.querySelectorAll("[role=tab]").forEach(tab => {
+        const on = tab.dataset.id === group.id;
+        tab.setAttribute("aria-selected", String(on));
+        tab.tabIndex = on ? 0 : -1;
+      });
+      let shown = 0;
+      grid.querySelectorAll(".product-card").forEach(card => {
+        const on = card.dataset.collection === group.id;
+        card.hidden = !on;
+        if (on) shown += 1;
+      });
+      grid.hidden = shown === 0;
+      if (soon) {
+        soon.hidden = shown > 0;
+        soon.textContent = group.status === "soon"
+          ? group.name + " em preparação. O próximo drop está chegando."
+          : "Nenhuma peça disponível nesta coleção agora.";
+      }
+    };
+    tabs.replaceChildren(...groups.map(group => {
+      const tab = element("button", "g-tab", group.name);
+      tab.type = "button";
+      tab.setAttribute("role", "tab");
+      tab.dataset.id = group.id;
+      if (group.status === "soon") tab.append(element("small", "", "Em breve"));
+      tab.addEventListener("click", () => select(group.id));
+      tab.addEventListener("keydown", event => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        const all = [...tabs.querySelectorAll("[role=tab]")];
+        const next = all[(all.indexOf(tab) + (event.key === "ArrowRight" ? 1 : all.length - 1)) % all.length];
+        next.focus(); next.click();
+      });
+      return tab;
+    }));
+    tabs.hidden = false;
+    const firstWithItems = groups.find(g => catalog.some(p => p.collection === g.id));
+    select((firstWithItems || groups[0]).id);
   }
   async function loadCatalog() {
     const grid = $(".products");
@@ -277,7 +330,7 @@
         Array.isArray(p.variants)
       );
       if (!catalog.length) throw new Error("catalog_invalid");
-      grid.replaceChildren(...catalog.map(productCard));
+      renderCollections(grid, Array.isArray(data.collections) ? data.collections : []);
       const intro = $(".section-top > p");
       if (intro) intro.textContent = "Fotos, cores e tamanhos sincronizados com a Gubo. Monte sua sacola e consulte o frete aqui na SWC.";
       const note = $(".collection-note");

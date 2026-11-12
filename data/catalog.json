@@ -1,5 +1,16 @@
 {
   "version": 1,
+  "collections": [
+    {
+      "id": "colecao-01",
+      "name": "Coleção 01"
+    },
+    {
+      "id": "colecao-02",
+      "name": "Coleção 02",
+      "status": "soon"
+    }
+  ],
   "products": [
     {
       "id": "pantano",
@@ -12,7 +23,8 @@
       "variants": [],
       "source": "gubo-studio",
       "productLinkStatus": "pending",
-      "guboProductCode": "P261111208"
+      "guboProductCode": "P261111208",
+      "collection": "colecao-01"
     },
     {
       "id": "camiseta-oversized-a604793d",
@@ -25,7 +37,8 @@
       "variants": [],
       "source": "gubo-studio",
       "productLinkStatus": "pending",
-      "guboProductCode": "P261111200"
+      "guboProductCode": "P261111200",
+      "collection": "colecao-01"
     }
   ]
 }
