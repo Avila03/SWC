@@ -38,6 +38,9 @@ module.exports = async function handler(req, res) {
       mentionsOversized: /oversized/i.test(body),
       hasNextData: /__NEXT_DATA__|self\.__next_f\.push/.test(body),
       hasJsonLd: /application\/ld\+json/i.test(body),
+      scripts: [...body.matchAll(/<script[^>]+src=["\x27]([^"\x27]+)["\x27]/gi)].map(m => m[1]).slice(0, 15),
+      htmlStart: body.slice(0, 1800),
+      htmlEnd: body.slice(-1800),
       loginPage: /entrar|faça login|sign in/i.test(body) && !/adicionar ao carrinho|comprar agora/i.test(body)
     });
   } catch (error) {
