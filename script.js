@@ -43,7 +43,6 @@
   }
   function productCard(product, index) {
     const variants = Array.isArray(product.variants) ? product.variants : [];
-    if (!variants.length) return null;
 
     const card = textEl("article", "product-card");
     const visual = textEl("div", "product-visual visual-tee");
@@ -68,6 +67,17 @@
     details.append(textEl("p", "", brl(product.priceCents)));
     if (product.description) details.append(textEl("p", "product-description", product.description));
     const controls = textEl("div", "product-controls");
+    if (!variants.length) {
+      controls.append(textEl("p", "product-prelaunch", "Tamanhos e cores em preparação"));
+      const disabled = textEl("button", "add-btn product-disabled", "Em breve");
+      disabled.type = "button";
+      disabled.disabled = true;
+      disabled.setAttribute("aria-label", "Produto indisponível para compra no momento");
+      controls.append(disabled);
+      info.append(details, controls);
+      card.append(visual, info);
+      return card;
+    }
     const label = textEl("label", "product-variant-label", "Escolha a variante");
     const select = textEl("select", "product-variant");
     select.setAttribute("aria-label", "Cor e tamanho de " + product.name);
@@ -104,11 +114,14 @@
     if (!cards.length) return;
     grid.replaceChildren(...cards);
     const intro = document.querySelector(".section-top > p");
-    if (intro) intro.textContent = "Conheça a coleção SWC. Escolha sua cor e tamanho; a sacola permanece demonstrativa enquanto preparamos o checkout.";
+    if (intro) intro.textContent = "As primeiras peças da SWC já estão cadastradas. A vitrine está em preparação: fotos e tamanhos serão disponibilizados antes da abertura das vendas.";
     const note = document.querySelector(".collection-note");
-    if (note) note.textContent = "* Os preços são definidos pela SWC. Nenhuma compra é processada nesta versão.";
+    if (note) note.textContent = "* Vitrine informativa. Sem checkout ou pedidos ativos nesta etapa.";
   }
-  loadCatalog().catch(() => { /* Mantém a prévia se o catálogo estiver indisponível. */ });
+  loadCatalog().catch(() => {
+    const grid = document.querySelector(".products");
+    if (grid) grid.replaceChildren(textEl("p", "catalog-loading", "Não foi possível carregar a coleção. Tente novamente mais tarde."));
+  });
 
   render();
 })();
