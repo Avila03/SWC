@@ -68,12 +68,15 @@
     if (product.description) details.append(textEl("p", "product-description", product.description));
     const controls = textEl("div", "product-controls");
     if (!variants.length) {
-      controls.append(textEl("p", "product-prelaunch", "Tamanhos e cores em preparação"));
-      const disabled = textEl("button", "add-btn product-disabled", "Em breve");
-      disabled.type = "button";
-      disabled.disabled = true;
-      disabled.setAttribute("aria-label", "Produto indisponível para compra no momento");
-      controls.append(disabled);
+      controls.append(textEl("p", "product-prelaunch", "Cores, tamanhos e compra na Gubo Store"));
+      const storeLink = document.createElement("a");
+      storeLink.className = "add-btn product-store-link";
+      storeLink.href = "https://gubo.com.br/loja/swampchill";
+      storeLink.target = "_blank";
+      storeLink.rel = "noopener noreferrer";
+      storeLink.textContent = "Ver na loja Gubo ↗";
+      storeLink.setAttribute("aria-label", "Abrir a loja oficial da Swamp Chill na Gubo");
+      controls.append(storeLink);
       info.append(details, controls);
       card.append(visual, info);
       return card;
@@ -114,9 +117,9 @@
     if (!cards.length) return;
     grid.replaceChildren(...cards);
     const intro = document.querySelector(".section-top > p");
-    if (intro) intro.textContent = "As primeiras peças da SWC já estão cadastradas. A vitrine está em preparação: fotos e tamanhos serão disponibilizados antes da abertura das vendas.";
+    if (intro) intro.textContent = "Peças da SWC cadastradas na Gubo. Para ver fotos, cores e tamanhos e comprar, acesse a loja oficial pela Gubo Store.";
     const note = document.querySelector(".collection-note");
-    if (note) note.textContent = "* Vitrine informativa. Sem checkout ou pedidos ativos nesta etapa.";
+    if (note) note.textContent = "* A vitrine SWC exibe um resumo; compras são feitas exclusivamente na Gubo Store. O catálogo ainda não sincroniza automaticamente.";
   }
   loadCatalog().catch(() => {
     const grid = document.querySelector(".products");
