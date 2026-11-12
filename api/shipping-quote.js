@@ -87,9 +87,11 @@ module.exports=async function handler(req,res) {
     subtotal+=prices.get(String(code))*quantity;
     entries.push({sku,quantidade:quantity});
   }
+  let stage="catalog";
   try {
     const all=await availableSkus(key);
     if(entries.some(x=>!all.has(x.sku)))return respond(res,422,{error:"variant_unavailable"});
+    stage="quote";
     const first=await gubo("/fretes/cotacoes",key,{
       method:"POST",body:{cep,itens:entries,entrega:{preferencia:"mais_barata"}}
     });
@@ -118,5 +120,5 @@ module.exports=async function handler(req,res) {
       expiresAt:quote.valida_ate||null,
       options,selection:quote.escolha?.servico||null
     });
-  }catch(error){return respond(res,502,{error:error?.name==="AbortError"?"gubo_timeout":"quote_unavailable"});}
+  }catch(error){return respond(res,502,{error:error?.name==="AbortError"?"gubo_timeout":"quote_unavailable",phase:stage});}
 };
