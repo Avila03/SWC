@@ -151,3 +151,112 @@ body{background:var(--g-deep)}
   .g-emblem-wrap{width:min(280px,66vw)}
   .g-emblem-reflex{display:none}
 }
+
+/* =====================================================================
+   Estilização extra — itens 1, 3, 4, 5, 8, 9 e 10
+   ===================================================================== */
+
+/* 5 · Numeração gigante vazada por sala */
+.g-hero,.g-section{position:relative;overflow:hidden;isolation:isolate}
+.g-ghost-num{position:absolute;right:calc(var(--g-pad) - 20px);bottom:-0.18em;z-index:-1;font:400 clamp(180px,26vw,420px)/1 var(--g-serif);letter-spacing:-.06em;color:transparent;-webkit-text-stroke:1px rgba(176,151,50,.13);pointer-events:none;user-select:none}
+.g-hero .g-ghost-num{right:auto;left:calc(var(--g-pad) - 30px);bottom:-0.22em}
+.g-manifesto .g-ghost-num{right:auto;left:50%;transform:translateX(-50%);bottom:-0.25em;-webkit-text-stroke-color:rgba(176,151,50,.09)}
+
+/* 3 · Água: ondulações finas e lentas */
+.g-water{position:absolute;left:0;right:0;bottom:0;height:150px;z-index:-1;pointer-events:none;opacity:.55;-webkit-mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent);mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent)}
+.g-water svg{width:100%;height:100%;display:block;overflow:visible}
+.g-water path{fill:none;stroke:var(--g-olive);stroke-width:1;vector-effect:non-scaling-stroke}
+.g-water .w1 path{stroke:var(--g-gold);opacity:.35}
+.g-water .w2 path{opacity:.5}.g-water .w3 path{opacity:.4}.g-water .w4 path{opacity:.28}
+.g-water g{animation:g-flow 26s linear infinite}
+.g-water .w2{animation-duration:34s;animation-direction:reverse}
+.g-water .w3{animation-duration:42s}
+.g-water .w4{animation-duration:52s;animation-direction:reverse}
+@keyframes g-flow{from{transform:translateX(0)}to{transform:translateX(-600px)}}
+.g-manifesto .g-water{opacity:.4}
+
+/* 4 · Revelação ao rolar (só com JS ativo) */
+.js [data-reveal]{opacity:0;transform:translateY(26px);transition:opacity .9s cubic-bezier(.2,.7,.2,1) var(--g-delay,0ms),transform .9s cubic-bezier(.2,.7,.2,1) var(--g-delay,0ms)}
+.js [data-reveal].is-in{opacity:1;transform:none}
+.g-kicker::before{transform-origin:left;transition:transform 1s cubic-bezier(.2,.7,.2,1) .25s}
+.js [data-reveal]:not(.is-in) .g-kicker::before,.js .g-kicker[data-reveal]:not(.is-in)::before{transform:scaleX(0)}
+.g-rail{position:relative}
+.g-rail::before,.g-rail::after{content:"";position:absolute;left:0;right:0;height:1px;background:var(--g-gold);opacity:.55;transform:scaleX(0);transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+.g-rail::before{top:-1px;transform-origin:left}.g-rail::after{bottom:-1px;transform-origin:right}
+.g-rail.is-in::before,.g-rail.is-in::after,.g-static .g-rail::before,.g-static .g-rail::after{transform:scaleX(1)}
+
+/* 8 · Raízes que ligam uma sala à outra */
+.g-root-node{position:absolute;top:0;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none;z-index:0}
+.g-root-node span{display:block;width:1px;height:clamp(40px,5vw,64px);background:linear-gradient(180deg,rgba(176,151,50,.7),var(--g-gold));transform-origin:top;transform:scaleY(0);transition:transform 1s cubic-bezier(.2,.7,.2,1)}
+.g-root-node img{width:clamp(84px,8vw,118px);height:auto;margin-top:-3px;opacity:0;clip-path:inset(0 0 100% 0);transition:clip-path 1.2s cubic-bezier(.2,.7,.2,1) .7s,opacity .6s .7s}
+.g-root-node.is-in span{transform:scaleY(1)}
+.g-root-node.is-in img{opacity:.85;clip-path:inset(0 0 0 0)}
+
+/* 9 · Olhos do pântano (estudo) */
+.g-next{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:40px}
+.g-eyes{width:clamp(110px,12vw,170px);opacity:0;transform:translateY(8px);transition:opacity 2.4s ease 0.6s,transform 2.4s ease .6s;margin-bottom:12px}
+.g-eyes.is-in{opacity:.9;transform:none}
+.g-eyes svg{width:100%;height:auto;display:block;overflow:visible}
+.g-eye{transform-box:fill-box;transform-origin:center;transition:transform .12s ease}
+.g-eye path{fill:#06170e;stroke:var(--g-gold);stroke-width:1.4}
+.g-eye ellipse{fill:var(--g-gold)}
+.g-eyes.blink .g-eye{transform:scaleY(.08)}
+
+/* 1 · Peças como obras: sombra, reflexo e frente/costas */
+.g-collection .product-visual{overflow:hidden;perspective:1400px}
+.product-stage{position:absolute;inset:9% 12% 20%;z-index:1;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+.g-collection .product-stage .product-photo{position:absolute;inset:0;width:100%;height:100%;padding:0;object-fit:contain;backface-visibility:hidden;-webkit-backface-visibility:hidden;filter:drop-shadow(0 26px 30px rgba(0,0,0,.5));transform:none}
+.product-photo-back{transform:rotateY(180deg)!important}
+.product-visual.has-back:hover .product-stage,.product-visual.has-back:focus-within .product-stage{transform:rotateY(180deg)}
+.product-reflex{position:absolute;left:12%;right:12%;top:80%;height:30%;width:76%;object-fit:contain;object-position:top;transform:scaleY(-1);opacity:.12;filter:blur(1.5px);-webkit-mask-image:linear-gradient(to top,#000,transparent 70%);mask-image:linear-gradient(to top,#000,transparent 70%);pointer-events:none}
+.product-flip-hint{position:absolute;right:32px;bottom:30px;z-index:2;font:600 8.5px var(--g-sans);letter-spacing:.24em;text-transform:uppercase;color:var(--g-mute)}
+@media(hover:none){.product-flip-hint{display:none}.product-visual.has-back:active .product-stage{transform:rotateY(180deg)}}
+
+/* 10 · Sacola no clima da galeria */
+.bag-panel{background:var(--g-deep);color:var(--g-ivory);border-left:1px solid var(--g-hair);box-shadow:-30px 0 80px rgba(0,0,0,.6)}
+.bag-head{border-bottom:1px solid var(--g-hair)}
+.bag-head .section-kicker{color:var(--g-gold)}
+.bag-head h2{font-family:var(--g-serif);font-weight:400;color:var(--g-ivory)}
+.close-bag{color:var(--g-gold)}
+.empty-bag{font-family:var(--g-serif);color:var(--g-ivory)}
+.empty-bag small{color:var(--g-mute)}
+.bag-item{border-bottom:1px solid var(--g-hair)}
+.bag-item strong{font-family:var(--g-serif);font-weight:400;color:var(--g-ivory)}
+.bag-item p,.bag-product-info p{color:var(--g-mute)}
+.bag-qty{border-color:var(--g-hair)}
+.bag-qty button{color:var(--g-gold)}
+.bag-remove{color:var(--g-mute)}
+.bag-shipping{border-top:1px solid var(--g-hair)}
+.bag-shipping h3{font-family:var(--g-serif);font-weight:400;color:var(--g-ivory)}
+.bag-help,.shipping-message{color:var(--g-mute)}
+.shipping-form label{color:var(--g-ivory)}
+.shipping-form-row input,.tc-field input{background:transparent;border:1px solid var(--g-hair);color:var(--g-ivory)}
+.shipping-form-row input::placeholder{color:rgba(169,179,164,.6)}
+.shipping-form-row button{background:var(--g-gold);color:var(--g-deep)}
+.shipping-option{background:transparent;border:1px solid var(--g-hair);color:var(--g-ivory)}
+.shipping-option:has(input:checked){border-color:var(--g-gold);box-shadow:0 0 0 1px var(--g-gold) inset}
+.shipping-option input{accent-color:#B09732}
+.shipping-option-details small{color:var(--g-mute)}
+.bag-bottom{background:var(--g-deep);border-top:1px solid var(--g-hair)}
+.bag-bottom p,.bag-safety-note{color:var(--g-mute)}
+.bag-total-line{color:var(--g-ivory)}
+.bag-grand-total{border-top:1px solid var(--g-hair)}
+.bag-grand-total strong{font-family:var(--g-serif);font-weight:400;color:var(--g-gold)}
+#checkout-action{background:transparent;border:1px solid var(--g-hair);color:var(--g-mute)}
+#checkout-action:not(:disabled){background:var(--g-gold);border-color:var(--g-gold);color:var(--g-deep)}
+.bag-panel .button-ghost{border-color:var(--g-hair);color:var(--g-ivory)}
+.tc-field,.tc-consent{color:var(--g-mute)}
+.tc-section h3{font-family:var(--g-serif);font-weight:400}
+.tc-code{background:transparent;border-color:var(--g-hair);color:var(--g-ivory)}
+.tc-link{color:var(--g-gold)}
+
+@media(max-width:760px){
+  .g-next{grid-template-columns:1fr;justify-items:start}
+  .g-eyes{justify-self:end;width:110px}
+  .g-ghost-num{font-size:46vw}
+  .g-water{height:100px}
+}
+@media(prefers-reduced-motion:reduce){
+  .g-water g,.g-eyes,.g-root-node *{animation:none;transition:none}
+}
+@media(max-width:760px){.g-section{padding-top:140px}}

@@ -11,8 +11,10 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./gallery.css">
+  <script>document.documentElement.classList.add("js")</script>
   <script defer src="./script.js"></script>
   <script defer src="./checkout-test.js"></script>
+  <script defer src="./gallery.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Ir para conteúdo</a>
@@ -36,6 +38,8 @@
   <main id="conteudo">
     <section class="g-hero" aria-labelledby="hero-title">
       <div class="g-hero-frame" aria-hidden="true"></div>
+      <span class="g-ghost-num" aria-hidden="true">01</span>
+      <div class="g-water" aria-hidden="true"><svg viewBox="0 0 1200 140" preserveAspectRatio="none"><g class="w1"><path d="M0 40 Q150 30 300 40 T600 40 T900 40 T1200 40 T1500 40 T1800 40"/></g><g class="w2"><path d="M0 70 Q150 62 300 70 T600 70 T900 70 T1200 70 T1500 70 T1800 70"/></g><g class="w3"><path d="M0 98 Q150 92 300 98 T600 98 T900 98 T1200 98 T1500 98 T1800 98"/></g><g class="w4"><path d="M0 122 Q150 117 300 122 T600 122 T900 122 T1200 122 T1500 122 T1800 122"/></g></svg></div>
       <p class="g-room g-room-left">SALA 01 &nbsp;—&nbsp; O PÂNTANO</p>
       <p class="g-room g-room-right">SWAMP CHILL &nbsp;·&nbsp; EST 2026</p>
       <figure class="g-piece">
@@ -57,7 +61,9 @@
     </div>
 
     <section id="colecao" class="g-section g-collection">
-      <header class="g-section-head">
+      <div class="g-root-node" aria-hidden="true"><span></span><img src="./assets/swc-raiz.png" alt="" width="140" height="83" loading="lazy"></div>
+      <span class="g-ghost-num" aria-hidden="true">02</span>
+      <header class="g-section-head" data-reveal>
         <p class="g-kicker">SALA 02 &nbsp;—&nbsp; COLEÇÃO 01</p>
         <h2>Peças em <em>exposição.</em></h2>
         <p class="g-lead">Cada peça é tratada como obra: poucas, pensadas e feitas pra durar. Escolha a sua, monte a sacola e calcule o frete aqui na SWC.</p>
@@ -69,19 +75,31 @@
     </section>
 
     <section class="g-section g-manifesto" id="manifesto">
-      <p class="g-kicker">SALA 03 &nbsp;—&nbsp; ESSÊNCIA</p>
-      <blockquote>
+      <div class="g-root-node" aria-hidden="true"><span></span><img src="./assets/swc-raiz.png" alt="" width="140" height="83" loading="lazy"></div>
+      <span class="g-ghost-num" aria-hidden="true">03</span>
+      <div class="g-water" aria-hidden="true"><svg viewBox="0 0 1200 140" preserveAspectRatio="none"><g class="w1"><path d="M0 40 Q150 30 300 40 T600 40 T900 40 T1200 40 T1500 40 T1800 40"/></g><g class="w2"><path d="M0 70 Q150 62 300 70 T600 70 T900 70 T1200 70 T1500 70 T1800 70"/></g><g class="w3"><path d="M0 98 Q150 92 300 98 T600 98 T900 98 T1200 98 T1500 98 T1800 98"/></g><g class="w4"><path d="M0 122 Q150 117 300 122 T600 122 T900 122 T1200 122 T1500 122 T1800 122"/></g></svg></div>
+      <p class="g-kicker" data-reveal>SALA 03 &nbsp;—&nbsp; ESSÊNCIA</p>
+      <blockquote data-reveal>
         <p>O pântano não segue <em>tendências.</em><br>Ele cria suas próprias <em>raízes.</em></p>
       </blockquote>
-      <p class="g-lead">Do grafite ao tecido, a Swamp Chill carrega personalidade em cada detalhe. Presença, atitude e identidade própria.</p>
+      <p class="g-lead" data-reveal>Do grafite ao tecido, a Swamp Chill carrega personalidade em cada detalhe. Presença, atitude e identidade própria.</p>
       <img class="g-seal" src="./assets/swc-emblema.png" alt="Emblema SWC" width="900" height="892" loading="lazy">
     </section>
 
     <section class="g-section g-next" id="contato">
+      <div class="g-root-node" aria-hidden="true"><span></span><img src="./assets/swc-raiz.png" alt="" width="140" height="83" loading="lazy"></div>
+      <div class="g-next-copy" data-reveal>
       <p class="g-kicker">PRÓXIMA SALA</p>
       <h2>O próximo drop <em>está chegando.</em></h2>
       <p class="g-lead">Estamos montando esse espaço peça por peça. Acompanhe a evolução da SWC.</p>
       <a class="g-link" href="#topo">Voltar ao início <span aria-hidden="true">↑</span></a>
+      </div>
+      <div class="g-eyes" aria-hidden="true">
+        <svg viewBox="0 0 140 44"><defs><filter id="g-glow" x="-50%" y="-80%" width="200%" height="260%"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <g class="g-eye" filter="url(#g-glow)"><path d="M8 22 Q32 2 56 22 Q32 42 8 22Z"/><ellipse cx="32" cy="22" rx="2.6" ry="10"/></g>
+          <g class="g-eye" filter="url(#g-glow)"><path d="M84 22 Q108 2 132 22 Q108 42 84 22Z"/><ellipse cx="108" cy="22" rx="2.6" ry="10"/></g>
+        </svg>
+      </div>
     </section>
   </main>
 

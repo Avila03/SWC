@@ -180,28 +180,43 @@
     const number = "Nº " + String(index + 1).padStart(2, "0");
     visual.append(element("span", "product-label", number));
     const sources = (product.images || []).filter(src => typeof src === "string");
+    // Peça como obra: 1ª imagem que carregar = frente; a seguinte = costas (aparece ao passar o mouse).
+    const load = src => new Promise(resolve => {
+      const probe = new Image();
+      probe.onload = () => resolve(probe.naturalWidth > 0);
+      probe.onerror = () => resolve(false);
+      probe.src = src;
+    });
+    const firstLoaded = async from => {
+      for (let i = from; i < sources.length; i++) if (await load(sources[i])) return i;
+      return -1;
+    };
+    const photo = (src, cls, alt) => {
+      const img = document.createElement("img");
+      img.className = cls; img.src = src; img.alt = alt; img.decoding = "async";
+      return img;
+    };
     const showFallback = () => {
       visual.classList.add("no-photo");
       visual.append(element("p", "product-no-photo", "Imagem em breve"));
     };
-    if (sources.length) {
-      const photo = document.createElement("img");
-      photo.className = "product-photo";
-      photo.alt = "Foto do produto " + product.name;
-      photo.loading = "lazy";
-      photo.decoding = "async";
-      let attempt = 0;
-      // Se uma URL falhar, tenta a próxima; sem nenhuma válida, mostra o aviso da marca em vez da imagem quebrada.
-      photo.addEventListener("error", () => {
-        attempt += 1;
-        if (attempt < sources.length) { photo.src = sources[attempt]; return; }
-        photo.remove();
-        showFallback();
-      });
-      photo.src = sources[0];
-      visual.append(photo);
-    } else {
-      showFallback();
+    if (!sources.length) showFallback();
+    else {
+      (async () => {
+        const front = await firstLoaded(0);
+        if (front < 0) { showFallback(); return; }
+        const stage = element("div", "product-stage");
+        stage.append(photo(sources[front], "product-photo", "Frente da peça " + product.name));
+        const back = await firstLoaded(front + 1);
+        if (back >= 0) {
+          stage.append(photo(sources[back], "product-photo product-photo-back", "Costas da peça " + product.name));
+          visual.classList.add("has-back");
+          visual.append(element("span", "product-flip-hint", "Passe o mouse · costas"));
+        }
+        const reflex = photo(sources[front], "product-reflex", "");
+        reflex.setAttribute("aria-hidden", "true");
+        visual.append(stage, reflex);
+      })();
     }
     const info = element("div", "product-info");
     const details = element("div", "product-details");
