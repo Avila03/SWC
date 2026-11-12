@@ -64,7 +64,7 @@
       <div class="products" aria-live="polite">
         <p class="catalog-loading">Carregando coleção SWC…</p>
       </div>
-      <p class="collection-note">* Catálogo integrado. Checkout e pagamentos ainda não disponíveis; nenhum pedido é criado.</p>
+      <p class="collection-note">* A sacola e o frete são demonstrativos. Pedidos e pagamentos ainda não estão disponíveis.</p>
     </section>
 
     <section class="manifesto" id="manifesto">
@@ -78,8 +78,29 @@
   <div id="bag-overlay" class="bag-overlay" hidden></div>
   <aside id="bag-panel" class="bag-panel" role="dialog" aria-modal="true" aria-labelledby="bag-title" aria-hidden="true">
     <div class="bag-head"><div><span class="section-kicker">SWAMP CHILL</span><h2 id="bag-title">Sua sacola</h2></div><button id="close-bag" class="close-bag" type="button" aria-label="Fechar sacola">×</button></div>
-    <div id="bag-items" class="bag-items"><p class="empty-bag">Sua sacola está vazia.<br><small>Explore os conceitos da coleção.</small></p></div>
-    <div class="bag-bottom"><p>Esta é apenas uma simulação. Nenhuma compra ou pagamento é realizado.</p><button id="keep-exploring" class="button button-primary" type="button">Continuar explorando</button></div>
+    <div id="bag-items" class="bag-items"><p class="empty-bag">Sua sacola está vazia.</p></div>
+    <section class="bag-shipping" id="bag-shipping" hidden aria-labelledby="shipping-title">
+      <h3 id="shipping-title">Entrega</h3>
+      <p class="bag-help">Calcule o frete Gubo com o CEP de destino. Esta cotação ainda é de teste.</p>
+      <form id="shipping-form" class="shipping-form">
+        <label for="shipping-cep">CEP de entrega</label>
+        <div class="shipping-form-row">
+          <input id="shipping-cep" name="cep" inputmode="numeric" autocomplete="postal-code"
+            placeholder="00000-000" maxlength="9" required pattern="[0-9]{5}-?[0-9]{3}">
+          <button type="submit" id="quote-button">Calcular</button>
+        </div>
+      </form>
+      <p id="shipping-message" class="shipping-message" role="status" aria-live="polite">Informe o CEP para consultar o frete.</p>
+      <div id="shipping-options" class="shipping-options" role="group" aria-label="Opções de entrega"></div>
+    </section>
+    <div class="bag-bottom">
+      <div class="bag-total-line"><span>Produtos</span><strong id="bag-subtotal">R$ 0,00</strong></div>
+      <div class="bag-total-line"><span>Frete</span><strong id="bag-shipping-value">A calcular</strong></div>
+      <div class="bag-total-line bag-grand-total"><span>Total estimado</span><strong id="bag-grand-total">R$ 0,00</strong></div>
+      <p class="bag-safety-note">Prévia do checkout. Nenhum pagamento ou pedido é realizado nesta etapa.</p>
+      <button id="checkout-action" class="button button-primary" type="button" disabled>Pagamento em preparação</button>
+      <button id="keep-exploring" class="button button-ghost bag-continue" type="button">Continuar explorando</button>
+    </div>
   </aside>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
