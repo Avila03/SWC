@@ -28,6 +28,7 @@ module.exports=async function handler(req,res){
       quoteReady:mockedRes.body?.status==="ready",
       optionsCount:mockedRes.body?.options?.length||0,
       error:mockedRes.body?.error||null,
+      phase:mockedRes.body?.phase||null,
       createdOrders:0,paid:false
     });
   }catch(e){return res.status(502).json({error:e?.name==="AbortError"?"timeout":"smoke_failed"});}
