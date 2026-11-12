@@ -1,4 +1,29 @@
 {
   "version": 1,
-  "products": []
+  "products": [
+    {
+      "id": "pantano",
+      "name": "pantano",
+      "category": "Camisetas",
+      "description": "",
+      "priceCents": 14990,
+      "images": [],
+      "active": true,
+      "variants": [],
+      "source": "gubo-studio",
+      "productLinkStatus": "pending"
+    },
+    {
+      "id": "camiseta-oversized-a604793d",
+      "name": "Camiseta Oversized A604793d 0236 429d 88ba b963ded855ca",
+      "category": "Camisetas Oversized",
+      "description": "",
+      "priceCents": 14990,
+      "images": [],
+      "active": true,
+      "variants": [],
+      "source": "gubo-studio",
+      "productLinkStatus": "pending"
+    }
+  ]
 }
