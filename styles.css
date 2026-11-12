@@ -24,3 +24,6 @@
 /* Checkout externo: não ativar pagamento falso na SWC. */
 .product-store-link{background:#133a2b;color:#f2e6ca;border-color:#133a2b;min-width:140px;text-decoration:none;justify-content:center;text-align:center;line-height:1.4}
 .product-store-link:hover{background:#27503c;color:#fff}
+
+/* Catálogo Gubo integrado, duas peças lado a lado em telas amplas. */
+@media(min-width:701px){.products:has(>.product-card:nth-child(2):last-child){grid-template-columns:repeat(2,minmax(0,1fr));max-width:960px}}
