@@ -1,49 +1,44 @@
-# Catálogo SWC e vínculos Gubo
+# SWC — Integração direta com a Gubo
 
-Este repositório hospeda o catálogo comercial da SWC, enquanto a Gubo produz as peças associadas aos SKUs de cada variante.
+## Estado atual (12/11/2026)
 
-## Como colocar produtos reais na vitrine
+A vitrine do site SWC consulta a API oficial da Gubo diretamente pelo backend hospedado no Vercel, sem redirecionar os compradores.
 
-Edite `data/catalog.json`. O campo `products` começa vazio para não inventarmos nomes, fotos, preços ou SKUs.
+- `GET /api/catalog` consulta no servidor:
+  - `GET https://api.gubo.com.br/v1/catalogo/produtos`
+  - `GET https://api.gubo.com.br/v1/catalogo/variantes?disponivel=true`
+- A autenticação usa `GUBO_API_KEY` configurada no Vercel. **Jamais incluir chave no JavaScript do navegador ou no repositório.**
+- O catálogo da Gubo fornece nome de referência, código do produto, foto e SKUs, cores e tamanhos disponíveis.
+- O arquivo `data/catalog.json` guarda os dados comerciais da SWC (nome de exibição, preço de venda, descrição, categorias, ativação). Ele referencia cada produto por `guboProductCode`.
+- O preço exibido é o da SWC (`priceCents`), **não o preço de produção** fornecido pela API Gubo.
+- A API da SWC tem cache de 5 minutos, reduzindo requisições à Gubo. O backend pagina respostas e fecha a venda em caso de indisponibilidade da integração.
+- A sacola permite selecionar uma variante e adicionar itens, **sem checkout, pagamentos ou pedidos reais** nesta etapa.
 
-Cada produto deve seguir este formato (apenas exemplo de estrutura — não é produto real):
+## Produtos atualmente conectados
 
-```json
-{
-  "version": 1,
-  "products": [
-    {
-      "id": "slug-unico-do-produto",
-      "name": "Nome do produto real",
-      "category": "Camisetas",
-      "description": "Descrição fornecida pela SWC",
-      "priceCents": 8990,
-      "images": ["/assets/foto-real-do-produto.webp"],
-      "active": true,
-      "variants": [
-        {
-          "sku": "SUBSTITUIR-PELO-SKU-REAL-DA-GUBO",
-          "color": "Preto",
-          "size": "M",
-          "available": true
-        }
-      ]
-    }
-  ]
-}
-```
+| Código Gubo | Cadastro na SWC |
+| --- | --- |
+| `P261111208` | pantano |
+| `P261111200` | Camiseta Oversized A604793d 0236 429d 88ba b963ded855ca |
 
-- `priceCents` é o preço da SWC em centavos, **não** o custo de produção da Gubo.
-- Cada combinação de cor e tamanho precisa do SKU correto da variante Gubo.
-- As fotos podem ser URLs HTTPS ou arquivos versionados no próprio site, como `/assets/...`.
-- Somente produtos com `active: true`, preço válido e pelo menos uma variante válida aparecem na vitrine.
-- A página consulta `GET /api/catalog` e substitui a vitrine conceitual quando há produtos reais.
-- Nenhum token ou informação privada deve ser escrito neste JSON. A chave `GUBO_API_KEY` permanece somente no Vercel.
+Os códigos acima foram confirmados em `GET /api/catalog` pela Gubo.
 
-## O que ainda não faz
+## Próxima etapa — checkout integrado
 
-- Não importamos automaticamente imagens, nomes e valores da Gubo: a existência dessa função não foi confirmada pela documentação acessível.
-- A sacola continua uma simulação; ainda não existe checkout, pagamento, frete ou criação de pedidos.
-- Não será feito envio para produção sem um fluxo de pagamento validado e a configuração completa dos endpoints e webhooks oficiais.
+Atualmente a chave de teste possui acesso ao catálogo/vínculos, mas `GET /v1/pedidos` retornou `403 escopo_insuficiente`. Para testes de pedidos, deve-se configurar no Gubo Dev uma chave com a permissão **Pedidos completos** no Vercel, sem enviá-la por chat nem registrar em logs.
 
-Documentação indicada pelo usuário: https://studio.gubo.com.br/docs-api/inicio-rapido
+Ainda será necessário:
+
+1. Definir um intermediador de pagamentos que confirme o pagamento por webhook seguro.
+2. Implementar checkout no domínio SWC, registro de pedido persistente, verificação do pagamento no backend, idempotência e cálculo do frete.
+3. Só depois da confirmação do pagamento, enviar o pedido para `POST /v1/pedidos/por-variante` com os SKUs corretos e `Idempotency-Key`.
+4. Implementar pagamento de produção pela carteira Gubo de forma controlada, acompanhamentos e webhook de rastreio.
+5. Executar o ciclo completo no modo de teste, antes de usar uma chave `gubo_live_`.
+
+**Não ativar pedidos reais sem validação de pagamento, saldo, frete, autenticação e mecanismos anti-duplicação.**
+
+Documentação:
+- https://gubo.com.br/docs-api/catalogo
+- https://gubo.com.br/docs-api/vinculos
+- https://gubo.com.br/docs-api/pedidos
+- https://gubo.com.br/docs-api/inicio-rapido
