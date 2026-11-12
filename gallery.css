@@ -132,3 +132,22 @@ body{background:var(--g-deep)}
 .g-collection .product-controls{max-width:none;width:100%}
 .g-collection .product-variant{width:100%;max-width:none;min-width:0;min-height:46px}
 .g-collection .add-btn{min-height:46px}
+/* Abertura: emblema e frase conectados por um fio dourado */
+.g-hero{grid-template-columns:auto auto minmax(0,560px);justify-content:center;align-items:center;gap:0}
+.g-piece{gap:0}
+.g-emblem-wrap{width:clamp(220px,25vw,360px)}
+.g-connector{display:block;width:clamp(48px,6vw,96px);height:1px;background:linear-gradient(90deg,var(--g-gold),rgba(176,151,50,.55));position:relative;margin:0 clamp(18px,2vw,28px) 0 clamp(10px,1.4vw,18px)}
+.g-connector i{position:absolute;right:-3px;top:-3px;width:7px;height:7px;background:var(--g-gold);transform:rotate(45deg)}
+.g-connector::before{content:"";position:absolute;left:-4px;top:-2px;width:5px;height:5px;border-radius:50%;background:var(--g-gold)}
+.g-hero-copy{border-left:1px solid var(--g-hair);padding-left:clamp(22px,2.6vw,40px)}
+.g-hero-copy h1{font-size:clamp(40px,4.4vw,72px);margin-bottom:22px}
+.g-hero-copy p{margin-bottom:34px}
+@media(max-width:1000px){
+  .g-hero{grid-template-columns:1fr;justify-items:center;gap:0}
+  .g-connector{width:1px;height:56px;margin:22px 0;background:linear-gradient(180deg,var(--g-gold),rgba(176,151,50,.55))}
+  .g-connector i{right:auto;left:-3px;top:auto;bottom:-3px}
+  .g-connector::before{left:-2px;top:-4px}
+  .g-hero-copy{border-left:0;padding-left:0;text-align:center}
+  .g-emblem-wrap{width:min(280px,66vw)}
+  .g-emblem-reflex{display:none}
+}
