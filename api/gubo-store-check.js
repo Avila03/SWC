@@ -22,9 +22,8 @@ module.exports = async function handler(req, res) {
       signal: controller.signal
     });
     const body = await upstream.text();
-    const title = body.match(/<title[^>]*>([\\s\\S]*?)<\\/title>/i)?.[1] || null;
-    const description = body.match(/<meta\\s+name=["']description["']\\s+content=["']([^"']*)/i)?.[1] || null;
-    // Apenas informações de uma página pública, sem enviar HTML bruto ao cliente.
+    const title = body.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || null;
+    const description = body.match(/<meta\s+name=["']description["']\s+content=["']([^"']*)/i)?.[1] || null;
     return res.status(200).json({
       checked: true,
       publicStoreUrl: STORE_URL,
@@ -37,8 +36,8 @@ module.exports = async function handler(req, res) {
       htmlLength: body.length,
       mentionsPantano: /pantano/i.test(body),
       mentionsOversized: /oversized/i.test(body),
-      hasNextData: /__NEXT_DATA__|self\\.__next_f\\.push/.test(body),
-      hasJsonLd: /application\\/ld\\+json/i.test(body),
+      hasNextData: /__NEXT_DATA__|self\.__next_f\.push/.test(body),
+      hasJsonLd: /application\/ld\+json/i.test(body),
       loginPage: /entrar|faça login|sign in/i.test(body) && !/adicionar ao carrinho|comprar agora/i.test(body)
     });
   } catch (error) {
