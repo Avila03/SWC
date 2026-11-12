@@ -174,7 +174,8 @@
     const variants = Array.isArray(product.variants) ? product.variants : [];
     const card = element("article", "product-card");
     const visual = element("div", "product-visual visual-tee");
-    visual.append(element("span", "product-label", "SWC / COLEÇÃO"));
+    const number = "Nº " + String(index + 1).padStart(2, "0");
+    visual.append(element("span", "product-label", number));
     const sources = (product.images || []).filter(src => typeof src === "string");
     const showFallback = () => {
       visual.classList.add("no-photo");
@@ -199,12 +200,20 @@
     } else {
       showFallback();
     }
-    visual.append(element("span", "product-ghost", String(index + 1).padStart(2, "0")));
     const info = element("div", "product-info");
     const details = element("div", "product-details");
-    details.append(element("span", "", String(product.category || "SWC").toUpperCase()));
+    details.append(element("span", "product-number", number + " · COLEÇÃO 01"));
     details.append(element("h3", "", product.name));
-    details.append(element("p", "", money(product.priceCents)));
+    // Ficha técnica no estilo de galeria: só dados reais do catálogo.
+    const sheet = element("dl", "product-sheet");
+    const row = (term, value) => { sheet.append(element("dt", "", term), element("dd", "", value)); };
+    row("Peça", String(product.category || "SWC"));
+    const colors = [...new Set(variants.map(v => v.color).filter(Boolean))];
+    if (colors.length) row("Cor", colors.join(", "));
+    const sizes = [...new Set(variants.map(v => v.size).filter(Boolean))];
+    if (sizes.length) row("Tamanhos", sizes.join(" · "));
+    row("Valor", money(product.priceCents));
+    details.append(sheet);
     if (product.description) details.append(element("p", "product-description", product.description));
     const controls = element("div", "product-controls");
     if (!variants.length) {

@@ -1,0 +1,127 @@
+/* =====================================================================
+   SWC — Conceito A: Galeria do Pântano
+   Galeria de arte à noite: verde profundo, muito espaço vazio, Bodoni,
+   dourado só em fios finos e numeração. A água entra em reflexos lentos.
+   ===================================================================== */
+:root{
+  --g-deep:#0B2416;--g-base:#10351F;--g-gold:#B09732;--g-olive:#77753C;
+  --g-ivory:#F0E6D0;--g-mute:#A9B3A4;--g-hair:rgba(176,151,50,.28);
+  --g-serif:"Bodoni Moda",serif;--g-sans:"DM Sans",sans-serif;
+  --g-pad:clamp(20px,6vw,110px);
+}
+body{background:var(--g-deep)}
+.grain{opacity:.045}
+
+/* ---------- Cabeçalho ---------- */
+.g-header{height:84px;padding:0 var(--g-pad);background:rgba(11,36,22,.9);border-bottom:1px solid var(--g-hair);display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
+.g-brand{display:block;justify-self:start;line-height:0}
+.g-brand img{height:52px;width:auto;display:block}
+.g-nav{display:flex;gap:44px}
+.g-nav a{font:600 10.5px/1 var(--g-sans);letter-spacing:.28em;text-transform:uppercase;color:var(--g-ivory);padding:8px 0;border-bottom:1px solid transparent;transition:color .25s,border-color .25s}
+.g-nav a:hover{color:var(--g-gold);border-color:var(--g-gold)}
+.g-actions{justify-self:end;display:flex;align-items:center;gap:26px}
+.g-est{font:600 10px var(--g-sans);letter-spacing:.3em;color:var(--g-gold)}
+.g-header .bag-count{background:var(--g-gold);color:var(--g-deep)}
+
+/* ---------- Abertura (sala 01) ---------- */
+.g-hero{position:relative;min-height:calc(100svh - 84px);display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:clamp(30px,6vw,120px);padding:110px var(--g-pad) 120px;background:radial-gradient(ellipse 70% 60% at 30% 45%,#173f27 0%,var(--g-base) 45%,var(--g-deep) 100%);overflow:hidden;isolation:isolate}
+.g-hero-frame{position:absolute;inset:34px calc(var(--g-pad) - 14px);border:1px solid var(--g-hair);pointer-events:none;z-index:-1}
+.g-room{position:absolute;top:50px;margin:0;font:600 9.5px var(--g-sans);letter-spacing:.32em;color:var(--g-gold)}
+.g-room-left{left:var(--g-pad)}.g-room-right{right:var(--g-pad)}
+.g-piece{margin:0;display:flex;flex-direction:column;align-items:center;gap:30px}
+.g-emblem-wrap{position:relative;width:min(400px,100%);aspect-ratio:900/892}
+.g-emblem{width:100%;height:auto;display:block;filter:drop-shadow(0 18px 30px rgba(0,0,0,.45));animation:g-rise 1.6s cubic-bezier(.2,.7,.2,1) both}
+.g-emblem-reflex{position:absolute;left:0;top:100%;width:100%;height:auto;transform:scaleY(-1);opacity:.13;filter:blur(1.5px);-webkit-mask-image:linear-gradient(to top,#000 0%,transparent 45%);mask-image:linear-gradient(to top,#000 0%,transparent 45%);animation:g-ripple 7s ease-in-out infinite;transform-origin:top center;pointer-events:none}
+.g-plaque{position:relative;z-index:1;display:grid;gap:4px;text-align:left;min-width:230px;padding:14px 18px;border:1px solid var(--g-hair);background:rgba(11,36,22,.72);font:400 11px/1.5 var(--g-sans);color:var(--g-mute);margin-top:clamp(40px,7vw,90px)}
+.g-plaque span:first-child{font:500 15px var(--g-serif);color:var(--g-ivory);letter-spacing:.06em}
+.g-plaque span:last-child{font-style:italic}
+.g-hero-copy h1{font:400 clamp(44px,5.6vw,86px)/1.04 var(--g-serif);letter-spacing:-.035em;color:var(--g-ivory);margin:0 0 26px}
+.g-hero-copy h1 em{font-style:italic;color:var(--g-gold)}
+.g-hero-copy p{font:400 15px/1.85 var(--g-sans);color:var(--g-mute);max-width:380px;margin:0 0 40px}
+.g-link{display:inline-flex;align-items:center;gap:18px;font:600 10.5px var(--g-sans);letter-spacing:.3em;text-transform:uppercase;color:var(--g-gold);padding:0 0 10px;border-bottom:1px solid var(--g-gold);transition:gap .3s,color .3s}
+.g-link:hover{gap:28px;color:var(--g-ivory)}
+@keyframes g-rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes g-ripple{0%,100%{transform:scaleY(-1) skewX(0deg) translateX(0)}50%{transform:scaleY(-1.03) skewX(1.2deg) translateX(3px)}}
+
+/* ---------- Faixa entre salas ---------- */
+.g-rail{display:flex;justify-content:center;align-items:center;gap:clamp(14px,3vw,40px);padding:22px var(--g-pad);border-top:1px solid var(--g-hair);border-bottom:1px solid var(--g-hair);background:var(--g-deep);font:600 10px var(--g-sans);letter-spacing:.34em;color:var(--g-gold);flex-wrap:wrap;text-align:center}
+.g-rail b{font-weight:400;color:var(--g-olive)}
+
+/* ---------- Salas (seções) ---------- */
+.g-section{padding:clamp(90px,11vw,160px) var(--g-pad)}
+.g-section-head{max-width:620px;margin-bottom:clamp(50px,6vw,80px)}
+.g-kicker{font:600 9.5px var(--g-sans);letter-spacing:.32em;color:var(--g-gold);margin:0 0 26px;display:flex;align-items:center;gap:16px}
+.g-kicker::before{content:"";width:34px;height:1px;background:var(--g-gold)}
+.g-section h2{font:400 clamp(38px,4.4vw,64px)/1.08 var(--g-serif);letter-spacing:-.03em;color:var(--g-ivory);margin:0 0 22px}
+.g-section h2 em{font-style:italic;color:var(--g-gold)}
+.g-lead{font:400 14px/1.9 var(--g-sans);color:var(--g-mute);max-width:470px;margin:0}
+
+/* ---------- Coleção: peças como obras ---------- */
+.g-collection{background:var(--g-base)}
+.g-products{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:clamp(40px,5vw,80px)}
+.g-collection .product-card{color:var(--g-ivory)}
+.g-collection .product-visual{height:auto;aspect-ratio:4/5;background:radial-gradient(circle at 50% 42%,#1d4a2e,var(--g-deep) 80%);outline:1px solid var(--g-hair);outline-offset:-18px}
+.g-collection .product-visual.no-photo{background:radial-gradient(circle at 50% 42%,#1d4a2e,var(--g-deep) 80%)}
+.g-collection .product-label{top:32px;left:32px;border:0;padding:0;font:500 13px var(--g-serif);letter-spacing:.12em;color:var(--g-gold)}
+.g-collection .product-no-photo{font:italic 400 20px var(--g-serif);color:var(--g-mute)}
+.g-collection .product-photo{padding:48px}
+.g-collection .product-info{padding-top:28px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;border-top:0}
+.g-collection .product-number{display:block;font:600 9.5px var(--g-sans);letter-spacing:.3em;color:var(--g-gold)}
+.g-collection .product-info h3{font:400 30px/1.15 var(--g-serif);letter-spacing:-.01em;color:var(--g-ivory);margin:12px 0 16px}
+.product-sheet{display:grid;grid-template-columns:auto 1fr;gap:6px 22px;margin:0;font:400 12px/1.5 var(--g-sans)}
+.product-sheet dt{color:var(--g-olive);letter-spacing:.14em;text-transform:uppercase;font-size:9.5px;font-weight:700;padding-top:2px;filter:brightness(1.35)}
+.product-sheet dd{margin:0;color:var(--g-ivory)}
+.g-collection .product-controls{display:flex;flex-direction:column;gap:10px;align-items:stretch;min-width:190px}
+.g-collection .product-variant-label{font:600 9.5px var(--g-sans);letter-spacing:.2em;text-transform:uppercase;color:var(--g-mute);display:flex;flex-direction:column;gap:8px}
+.g-collection .product-variant{background:transparent;color:var(--g-ivory);border:1px solid var(--g-hair);padding:11px 10px;font:400 13px var(--g-sans)}
+.g-collection .product-variant option{color:#0B2416}
+.g-collection .add-btn{background:transparent;border:1px solid var(--g-gold);color:var(--g-gold);justify-content:center;font:600 10px var(--g-sans);letter-spacing:.24em;text-transform:uppercase;padding:14px;min-width:0;transition:background .25s,color .25s}
+.g-collection .add-btn:hover{background:var(--g-gold);color:var(--g-deep)}
+.g-collection .add-btn:disabled{opacity:.45;cursor:not-allowed}
+.g-collection .product-prelaunch{font-size:11px;color:var(--g-mute)}
+.g-collection .collection-note,.g-collection .catalog-loading{color:var(--g-mute);font-size:11px;margin-top:50px}
+
+/* ---------- Essência ---------- */
+.g-manifesto{background:var(--g-deep);text-align:center;display:flex;flex-direction:column;align-items:center}
+.g-manifesto .g-kicker{justify-content:center}
+.g-manifesto blockquote{margin:0 0 34px}
+.g-manifesto blockquote p{font:400 clamp(36px,4.8vw,72px)/1.15 var(--g-serif);letter-spacing:-.03em;color:var(--g-ivory);margin:0}
+.g-manifesto blockquote em{font-style:italic;color:var(--g-gold)}
+.g-manifesto .g-lead{margin:0 auto}
+.g-seal{width:92px;height:auto;margin-top:60px;opacity:.9}
+
+/* ---------- Próximo drop ---------- */
+.g-next{background:var(--g-base);border-top:1px solid var(--g-hair)}
+.g-next .g-lead{margin-bottom:40px}
+
+/* ---------- Rodapé ---------- */
+.g-footer{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:30px;padding:36px var(--g-pad);background:var(--g-deep);border-top:1px solid var(--g-hair);font:600 9.5px var(--g-sans);letter-spacing:.24em;color:var(--g-mute)}
+.g-footer img{height:46px;width:auto}
+.g-footer span:nth-child(2){text-align:center;color:var(--g-gold)}
+
+/* ---------- Responsivo ---------- */
+@media(max-width:1000px){
+  .g-hero{grid-template-columns:1fr;text-align:center;padding-top:100px}
+  .g-hero-copy p{margin-inline:auto}
+  .g-plaque{margin-inline:auto}
+  .g-emblem-wrap{width:min(300px,70vw)}
+}
+@media(max-width:760px){
+  .g-header{height:68px;grid-template-columns:auto 1fr;gap:12px}
+  .g-brand img{height:40px}
+  .g-nav{display:none}
+  .g-est{display:none}
+  .g-actions{justify-self:end}
+  .g-hero{min-height:auto;padding:84px 22px 90px;gap:40px}
+  .g-hero-frame{inset:18px 10px}
+  .g-room{top:34px;font-size:8px;letter-spacing:.22em}
+  .g-room-left{left:24px}.g-room-right{display:none}
+  .g-hero-copy h1{font-size:clamp(38px,10.5vw,52px)}
+  .g-plaque{margin-top:46px;min-width:0}
+  .g-rail{font-size:8.5px;letter-spacing:.24em;gap:10px}
+  .g-collection .product-info{grid-template-columns:1fr}
+  .g-collection .product-visual{outline-offset:-12px}
+  .g-collection .product-label{top:24px;left:24px}
+  .g-footer{grid-template-columns:1fr;text-align:center;justify-items:center;gap:14px}
+}
+@media(prefers-reduced-motion:reduce){.g-emblem,.g-emblem-reflex{animation:none}}

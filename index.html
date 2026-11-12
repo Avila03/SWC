@@ -3,28 +3,29 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#061d15">
+  <meta name="theme-color" content="#0B2416">
   <meta name="description" content="Swamp Chill — qualidade raiz, exclusividade real. Uma prévia do universo SWC.">
   <title>Swamp Chill — SWC</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Permanent+Marker&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./gallery.css">
   <script defer src="./script.js"></script>
   <script defer src="./checkout-test.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Ir para conteúdo</a>
   <div class="grain" aria-hidden="true"></div>
-  <header class="site-header" id="topo">
-    <a class="brand" href="#topo" aria-label="Swamp Chill, início">
-      <span class="brand-monogram">SWC</span><span class="brand-name">Swamp<br>Chill</span>
+  <header class="site-header g-header" id="topo">
+    <a class="g-brand" href="#topo" aria-label="Swamp Chill, início">
+      <img src="./assets/swamp-chill-lettering.png" alt="Swamp Chill" width="959" height="558">
     </a>
-    <nav class="desktop-nav" aria-label="Navegação principal">
-      <a href="#colecao">Coleção</a><a href="#manifesto">A essência</a><a href="#contato">Contato</a>
+    <nav class="g-nav" aria-label="Navegação principal">
+      <a href="#colecao">Coleção</a><a href="#manifesto">Essência</a><a href="#contato">Próximo drop</a>
     </nav>
-    <div class="header-actions">
-      <span class="edition">EST. 2026</span>
+    <div class="g-actions">
+      <span class="g-est">EST 2026</span>
       <button class="bag-trigger" id="open-bag" type="button" aria-label="Abrir sacola">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 8h15l-1.2 12H5.7L4.5 8Zm4-1V6a3.5 3.5 0 0 1 7 0v1"/></svg>
         <span>Sacola</span><span id="bag-count" class="bag-count">0</span>
@@ -33,49 +34,66 @@
   </header>
 
   <main id="conteudo">
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="wall" aria-hidden="true"></div>
-      <div class="light-pool" aria-hidden="true"></div>
-      <div class="hero-inner">
-        <div class="hero-art" aria-label="Emblema SWC em estilo grafite dourado">
-          <span class="hero-art-caption">ASSINATURA ORIGINAL / SWAMP CHILL</span>
-          <img class="graffiti" src="./swc-signature.svg" alt="Assinatura original SWC em grafite dourado" width="500" height="500">
-          <span class="hero-art-bottom">RAIZ, NÃO TENDÊNCIA.</span>
+    <section class="g-hero" aria-labelledby="hero-title">
+      <div class="g-hero-frame" aria-hidden="true"></div>
+      <p class="g-room g-room-left">SALA 01 &nbsp;—&nbsp; O PÂNTANO</p>
+      <p class="g-room g-room-right">SWAMP CHILL &nbsp;·&nbsp; EST 2026</p>
+      <figure class="g-piece">
+        <div class="g-emblem-wrap">
+          <img class="g-emblem" src="./assets/swc-emblema.png" alt="Emblema SWC" width="900" height="892">
+          <img class="g-emblem-reflex" src="./assets/swc-emblema.png" alt="" aria-hidden="true" width="900" height="892">
         </div>
-        <div class="hero-copy">
-          <p class="eyebrow"><span class="eyebrow-line"></span> BEM-VINDO AO PÂNTANO</p>
-          <p class="hero-script">Swamp Chill</p>
-          <h1 id="hero-title">Qualidade <em>raiz.</em><br>Exclusividade <em>real.</em></h1>
-          <p class="hero-description">Streetwear de respeito. Pra quem vive o hype com classe. Uma identidade que não segue o fluxo — cria o próprio caminho.</p>
-          <div class="hero-buttons">
-            <a class="button button-primary" href="#colecao">Explorar a coleção <span aria-hidden="true">↗</span></a>
-            <a class="button button-ghost" href="#manifesto">Conhecer a SWC <span aria-hidden="true">↘</span></a>
-          </div>
-          <p class="hero-footnote">PRIMEIRA EDIÇÃO · PRÉVIA CONCEITUAL</p>
-        </div>
+        <figcaption class="g-plaque">
+          <span>SWC</span>
+          <span>Assinatura original</span>
+          <span>Grafite dourado sobre verde profundo</span>
+        </figcaption>
+      </figure>
+      <div class="g-hero-copy">
+        <h1 id="hero-title">Qualidade <em>raiz.</em><br>Exclusividade <em>real.</em></h1>
+        <p>Streetwear de respeito. Pra quem vive o hype com classe.</p>
+        <a class="g-link" href="#colecao">Ver a coleção <span aria-hidden="true">→</span></a>
       </div>
-      <div class="water" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-      <a href="#colecao" class="scroll-hint" aria-label="Rolar para a coleção">DESCUBRA <span aria-hidden="true">↓</span></a>
     </section>
 
-    <div class="ticker" aria-hidden="true"><div class="ticker-track">SWAMP CHILL <b>✦</b> QUALIDADE RAIZ <b>✦</b> EXCLUSIVIDADE REAL <b>✦</b> SWAMP CHILL <b>✦</b> QUALIDADE RAIZ <b>✦</b> EXCLUSIVIDADE REAL <b>✦</b></div></div>
+    <div class="g-rail" aria-hidden="true">
+      <span>QUALIDADE RAIZ</span><b>✦</b><span>EXCLUSIVIDADE REAL</span><b>✦</b><span>PRA QUEM SABE O VALOR</span>
+    </div>
 
-    <section id="colecao" class="collection section-shell">
-      <div class="section-top"><div><span class="section-kicker">01 / O NOSSO UNIVERSO</span><h2>Uma nova <em>espécie</em><br>de streetwear.</h2></div><p>Conheça as primeiras peças da SWC, com fotos, cores e tamanhos sincronizados diretamente da Gubo.</p></div>
-      <div class="products" aria-live="polite">
+    <section id="colecao" class="g-section g-collection">
+      <header class="g-section-head">
+        <p class="g-kicker">SALA 02 &nbsp;—&nbsp; COLEÇÃO 01</p>
+        <h2>Peças em <em>exposição.</em></h2>
+        <p class="g-lead">Cada peça é tratada como obra: poucas, pensadas e feitas pra durar. Escolha a sua, monte a sacola e calcule o frete aqui na SWC.</p>
+      </header>
+      <div class="products g-products" aria-live="polite">
         <p class="catalog-loading">Carregando coleção SWC…</p>
       </div>
       <p class="collection-note">* A sacola e o frete são demonstrativos. Pedidos e pagamentos ainda não estão disponíveis.</p>
     </section>
 
-    <section class="manifesto" id="manifesto">
-      <div class="manifesto-mist" aria-hidden="true"></div>
-      <div class="manifesto-inner section-shell"><span class="section-kicker">02 / A NOSSA ESSÊNCIA</span><p class="manifesto-pre">NASCIDOS FORA DO PADRÃO</p><h2>O pântano não segue <em>tendências.</em><br>Ele cria suas próprias <em>raízes.</em></h2><p>Do grafite ao tecido, a Swamp Chill carrega personalidade em cada detalhe. Uma marca com presença, atitude e identidade própria.</p><div class="manifesto-stamp">SWC <span>EST. 2026</span></div></div>
+    <section class="g-section g-manifesto" id="manifesto">
+      <p class="g-kicker">SALA 03 &nbsp;—&nbsp; ESSÊNCIA</p>
+      <blockquote>
+        <p>O pântano não segue <em>tendências.</em><br>Ele cria suas próprias <em>raízes.</em></p>
+      </blockquote>
+      <p class="g-lead">Do grafite ao tecido, a Swamp Chill carrega personalidade em cada detalhe. Presença, atitude e identidade própria.</p>
+      <img class="g-seal" src="./assets/swc-emblema.png" alt="Emblema SWC" width="900" height="892" loading="lazy">
     </section>
-    <section class="contact section-shell" id="contato"><div><span class="section-kicker">03 / AINDA É SÓ O COMEÇO</span><h2>O próximo drop<br><em>está chegando.</em></h2></div><div><p>Estamos construindo esse espaço peça por peça. Por enquanto, explore a primeira versão e acompanhe a evolução da SWC.</p><a class="button button-outline" href="#topo">Voltar ao topo <span aria-hidden="true">↑</span></a></div></section>
+
+    <section class="g-section g-next" id="contato">
+      <p class="g-kicker">PRÓXIMA SALA</p>
+      <h2>O próximo drop <em>está chegando.</em></h2>
+      <p class="g-lead">Estamos montando esse espaço peça por peça. Acompanhe a evolução da SWC.</p>
+      <a class="g-link" href="#topo">Voltar ao início <span aria-hidden="true">↑</span></a>
+    </section>
   </main>
 
-  <footer><a class="footer-brand" href="#topo">Swamp Chill <span>✦</span></a><span>QUALIDADE RAIZ. EXCLUSIVIDADE REAL.</span><span>© 2026 SWC · PRÉVIA</span></footer>
+  <footer class="g-footer">
+    <img src="./assets/swamp-chill-lettering.png" alt="Swamp Chill" width="959" height="558" loading="lazy">
+    <span>QUALIDADE RAIZ. EXCLUSIVIDADE REAL.</span>
+    <span>© 2026 SWC · EST 2026</span>
+  </footer>
   <div id="bag-overlay" class="bag-overlay" hidden></div>
   <aside id="bag-panel" class="bag-panel" role="dialog" aria-modal="true" aria-labelledby="bag-title" aria-hidden="true">
     <div class="bag-head"><div><span class="section-kicker">SWAMP CHILL</span><h2 id="bag-title">Sua sacola</h2></div><button id="close-bag" class="close-bag" type="button" aria-label="Fechar sacola">×</button></div>
