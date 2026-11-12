@@ -1,41 +1,56 @@
-const targets = [
-  ["studio-docs","https://studio.gubo.com.br/docs-api/inicio-rapido"],
-  ["api-openapi","https://api.gubo.com.br/openapi.json"],
-  ["api-v1-openapi","https://api.gubo.com.br/v1/openapi.json"],
-  ["api-v1-docs","https://api.gubo.com.br/v1/docs"],
-  ["studio-swagger","https://studio.gubo.com.br/docs-api"]
+// Diagnóstico temporário restrito a requisições GET de leitura.
+// Nunca retorna chave ou dados dos pedidos/clientes.
+const endpoints = [
+  ["conexao","/v1/conexao"],
+  ["vinculos","/v1/vinculos"],
+  ["produtos","/v1/produtos"],
+  ["catalogo","/v1/catalogo"],
+  ["variantes","/v1/variantes"],
+  ["pedidos","/v1/pedidos"],
+  ["itens","/v1/itens"]
 ];
-function simplify(text, contentType) {
-  const isHtml = String(contentType || "").includes("text/html");
-  if (isHtml) {
-    const title = text.match(/<title[^>]*>([^<]{0,160})<\/title>/i)?.[1] || "";
-    const headings = [...text.matchAll(/<h[1-4][^>]*>([\s\S]{0,200}?)<\/h[1-4]>/gi)]
-      .slice(0,12).map(x=>x[1].replace(/<[^>]*>/g, "").trim());
-    const paths=[...new Set((text.match(/\/v1\/[a-zA-Z0-9/_-]+/g)||[]))].slice(0,30);
-    return { title, headings, paths, length:text.length, snippet:text.replace(/<script[\s\S]*?<\/script>/gi," ").replace(/<style[\s\S]*?<\/style>/gi," ").replace(/<[^>]+>/g," ").replace(/\s+/g," ").slice(0,1100) };
-  }
-  if (String(contentType||"").includes("application/json")) {
-    try {
-      const json=JSON.parse(text);
-      return { version:json.openapi||json.swagger||null,info:json.info?{title:json.info.title,version:json.info.version}:null,
-        paths:json.paths?Object.keys(json.paths).slice(0,50):[],
-        keys:Object.keys(json).slice(0,10), preview:text.slice(0,350) };
-    } catch { return {preview:text.slice(0,350)}; }
-  }
-  return {preview:text.slice(0,300), length:text.length};
+const docs=[
+  ["public-docs","https://gubo.com.br/docs-api/inicio-rapido"],
+  ["public-docs-index","https://gubo.com.br/docs-api"],
+  ["public-docs-errors","https://gubo.com.br/docs-api/erros"]
+];
+async function getStatus(url,headers={}) {
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),6500);
+  try{
+    const response=await fetch(url,{method:"GET",headers,redirect:"follow",signal:controller.signal});
+    const text=(await response.text()).slice(0,300000);
+    const type=response.headers.get("content-type")||"";
+    const data={status:response.status,type,host:new URL(response.url).hostname};
+    if(type.includes("application/json")) {
+      try {
+        const parsed=JSON.parse(text);
+        data.shape=Array.isArray(parsed)?"array":typeof parsed;
+        if(Array.isArray(parsed))data.count=parsed.length;
+        else if(parsed && typeof parsed==="object"){
+          data.keys=Object.keys(parsed).slice(0,15);
+          // APIs que retornam erro: mostrar só o código, sem campos de clientes.
+          data.errorCode=parsed.erro?.codigo||parsed.error?.code||parsed.codigo||null;
+          data.fieldShape=Object.entries(parsed).filter(([,value])=>Array.isArray(value)).map(([name,arr])=>({name,count:arr.length})).slice(0,5);
+        }
+      }catch{data.jsonInvalid=true;}
+    } else if(type.includes("text/html")){
+      data.title=text.match(/<title[^>]*>([^<]{0,160})<\/title>/i)?.[1]||"";
+      data.length=text.length;
+      data.headings=[...text.matchAll(/<h[1-4][^>]*>([\s\S]*?)<\/h[1-4]>/gi)].slice(0,10).map(x=>x[1].replace(/<[^>]+>/g,"").trim());
+    }
+    return data;
+  }catch(e){return {status:null,error:e.name==="AbortError"?"timeout":"unreachable"};}
+  finally{clearTimeout(timer);}
 }
 module.exports=async function handler(req,res) {
   res.setHeader("Cache-Control","no-store");
   if(req.method!=="GET")return res.status(405).json({error:"method_not_allowed"});
-  const results=await Promise.all(targets.map(async ([name,url])=>{
-    const controller=new AbortController();const t=setTimeout(()=>controller.abort(),6500);
-    try{
-      const response=await fetch(url,{headers:{"Accept":"text/html, application/json;q=0.9"},redirect:"follow",signal:controller.signal});
-      const contentType=response.headers.get("content-type")||"";
-      const body=(await response.text()).slice(0,300000);
-      return {name,status:response.status,finalHost:new URL(response.url).hostname,contentType,summary:simplify(body,contentType)};
-    }catch(e){return {name,error:e.name==="AbortError"?"timeout":"unreachable"};}
-    finally{clearTimeout(t)}
-  }));
-  return res.status(200).json({results});
+  const key=process.env.GUBO_API_KEY;
+  if(!key||!key.startsWith("gubo_test_"))return res.status(503).json({error:"test_key_required"});
+  const results=await Promise.all(endpoints.map(async ([name,path])=>({
+    name,...await getStatus("https://api.gubo.com.br"+path,{"Authorization":"Bearer "+key,"Accept":"application/json"})
+  })));
+  const publicDocs=await Promise.all(docs.map(async ([name,url])=>({name,...await getStatus(url,{"Accept":"text/html"})})));
+  return res.status(200).json({checks:results,docs:publicDocs});
 };
