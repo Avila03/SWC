@@ -170,8 +170,11 @@
     cartChanged();
     notify(product.name + " adicionado à sacola.");
   }
+  const SIZE_ORDER = ["PP","P","M","G","GG","XG","XGG","EG","EGG"];
+  const rank = size => { const i = SIZE_ORDER.indexOf(String(size || "").toUpperCase()); return i < 0 ? 99 : i; };
   function productCard(product, index) {
-    const variants = Array.isArray(product.variants) ? product.variants : [];
+    const variants = (Array.isArray(product.variants) ? [...product.variants] : [])
+      .sort((a, b) => String(a.color).localeCompare(String(b.color)) || rank(a.size) - rank(b.size));
     const card = element("article", "product-card");
     const visual = element("div", "product-visual visual-tee");
     const number = "Nº " + String(index + 1).padStart(2, "0");
@@ -210,7 +213,7 @@
     row("Peça", String(product.category || "SWC"));
     const colors = [...new Set(variants.map(v => v.color).filter(Boolean))];
     if (colors.length) row("Cor", colors.join(", "));
-    const sizes = [...new Set(variants.map(v => v.size).filter(Boolean))];
+    const sizes = [...new Set(variants.map(v => v.size).filter(Boolean))].sort((a, b) => rank(a) - rank(b));
     if (sizes.length) row("Tamanhos", sizes.join(" · "));
     row("Valor", money(product.priceCents));
     details.append(sheet);

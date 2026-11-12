@@ -35,7 +35,7 @@ body{background:var(--g-deep)}
 .g-plaque{position:relative;z-index:1;display:grid;gap:4px;text-align:left;min-width:230px;padding:14px 18px;border:1px solid var(--g-hair);background:rgba(11,36,22,.72);font:400 11px/1.5 var(--g-sans);color:var(--g-mute);margin-top:clamp(40px,7vw,90px)}
 .g-plaque span:first-child{font:500 15px var(--g-serif);color:var(--g-ivory);letter-spacing:.06em}
 .g-plaque span:last-child{font-style:italic}
-.g-hero-copy h1{font:400 clamp(44px,5.6vw,86px)/1.04 var(--g-serif);letter-spacing:-.035em;color:var(--g-ivory);margin:0 0 26px}
+.g-hero-copy h1{font:400 clamp(44px,4.9vw,78px)/1.04 var(--g-serif);letter-spacing:-.035em;color:var(--g-ivory);margin:0 0 26px}
 .g-hero-copy h1 em{font-style:italic;color:var(--g-gold)}
 .g-hero-copy p{font:400 15px/1.85 var(--g-sans);color:var(--g-mute);max-width:380px;margin:0 0 40px}
 .g-link{display:inline-flex;align-items:center;gap:18px;font:600 10.5px var(--g-sans);letter-spacing:.3em;text-transform:uppercase;color:var(--g-gold);padding:0 0 10px;border-bottom:1px solid var(--g-gold);transition:gap .3s,color .3s}
@@ -58,20 +58,20 @@ body{background:var(--g-deep)}
 
 /* ---------- Coleção: peças como obras ---------- */
 .g-collection{background:var(--g-base)}
-.g-products{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:clamp(40px,5vw,80px)}
+.g-collection .g-products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(40px,6vw,96px);max-width:1180px}
 .g-collection .product-card{color:var(--g-ivory)}
 .g-collection .product-visual{height:auto;aspect-ratio:4/5;background:radial-gradient(circle at 50% 42%,#1d4a2e,var(--g-deep) 80%);outline:1px solid var(--g-hair);outline-offset:-18px}
 .g-collection .product-visual.no-photo{background:radial-gradient(circle at 50% 42%,#1d4a2e,var(--g-deep) 80%)}
 .g-collection .product-label{top:32px;left:32px;border:0;padding:0;font:500 13px var(--g-serif);letter-spacing:.12em;color:var(--g-gold)}
 .g-collection .product-no-photo{font:italic 400 20px var(--g-serif);color:var(--g-mute)}
 .g-collection .product-photo{padding:48px}
-.g-collection .product-info{padding-top:28px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;border-top:0}
+.g-collection .product-info{padding-top:28px;display:flex;flex-direction:column;align-items:stretch;gap:26px;border-top:0}
 .g-collection .product-number{display:block;font:600 9.5px var(--g-sans);letter-spacing:.3em;color:var(--g-gold)}
 .g-collection .product-info h3{font:400 30px/1.15 var(--g-serif);letter-spacing:-.01em;color:var(--g-ivory);margin:12px 0 16px}
 .product-sheet{display:grid;grid-template-columns:auto 1fr;gap:6px 22px;margin:0;font:400 12px/1.5 var(--g-sans)}
 .product-sheet dt{color:var(--g-olive);letter-spacing:.14em;text-transform:uppercase;font-size:9.5px;font-weight:700;padding-top:2px;filter:brightness(1.35)}
 .product-sheet dd{margin:0;color:var(--g-ivory)}
-.g-collection .product-controls{display:flex;flex-direction:column;gap:10px;align-items:stretch;min-width:190px}
+.g-collection .product-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end;margin-top:0;padding-top:22px;border-top:1px solid var(--g-hair)}
 .g-collection .product-variant-label{font:600 9.5px var(--g-sans);letter-spacing:.2em;text-transform:uppercase;color:var(--g-mute);display:flex;flex-direction:column;gap:8px}
 .g-collection .product-variant{background:transparent;color:var(--g-ivory);border:1px solid var(--g-hair);padding:11px 10px;font:400 13px var(--g-sans)}
 .g-collection .product-variant option{color:#0B2416}
@@ -108,7 +108,7 @@ body{background:var(--g-deep)}
 }
 @media(max-width:760px){
   .g-header{height:68px;grid-template-columns:auto 1fr;gap:12px}
-  .g-brand img{height:40px}
+  .g-brand img{height:46px}
   .g-nav{display:none}
   .g-est{display:none}
   .g-actions{justify-self:end}
@@ -119,9 +119,16 @@ body{background:var(--g-deep)}
   .g-hero-copy h1{font-size:clamp(38px,10.5vw,52px)}
   .g-plaque{margin-top:46px;min-width:0}
   .g-rail{font-size:8.5px;letter-spacing:.24em;gap:10px}
-  .g-collection .product-info{grid-template-columns:1fr}
+  .g-collection .g-products{grid-template-columns:1fr}
+  .g-collection .product-controls{grid-template-columns:1fr}
   .g-collection .product-visual{outline-offset:-12px}
   .g-collection .product-label{top:24px;left:24px}
   .g-footer{grid-template-columns:1fr;text-align:center;justify-items:center;gap:14px}
 }
 @media(prefers-reduced-motion:reduce){.g-emblem,.g-emblem-reflex{animation:none}}
+/* Sobrepõe regras antigas da grade de 2 peças e dos controles */
+.g-collection .g-products{max-width:1180px!important}
+@media(min-width:761px){.g-collection .g-products{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+.g-collection .product-controls{max-width:none;width:100%}
+.g-collection .product-variant{width:100%;max-width:none;min-width:0;min-height:46px}
+.g-collection .add-btn{min-height:46px}
