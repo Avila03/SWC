@@ -335,7 +335,11 @@
         return;
       }
       quote = payload;
-      renderShippingOptions(payload.options||[]);
+      const options = payload.options || [];
+      selectedService = options.some(o => o.service === payload.selection)
+        ? payload.selection
+        : [...options].sort((a,b) => a.priceCents - b.priceCents)[0]?.service || null;
+      renderShippingOptions(options);
     } catch (_) {
       if (version === quoteVersion) els.shippingMessage.textContent = "Não foi possível conectar à Gubo. Tente novamente.";
     } finally {
