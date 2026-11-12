@@ -1,33 +1,35 @@
-// One-time sandbox diagnostic for SWC; no real orders or payments.
-module.exports=async function handler(req,res) {
+// One-time test of the actual SWC shipping handler with safe sandbox data.
+module.exports=async function handler(req,res){
   res.setHeader("Cache-Control","no-store");
   if(req.method!=="GET")return res.status(405).json({error:"method_not_allowed"});
   const key=process.env.GUBO_ORDERS_API_KEY;
-  if(!key?.startsWith("gubo_test_"))return res.status(503).json({status:"test_key_required"});
-  const controller=new AbortController();const t=setTimeout(()=>controller.abort(),11000);
-  try {
-    const base="https://api.gubo.com.br/v1";
-    const cat=await fetch(base+"/catalogo/variantes?disponivel=true&limite=1",{
-      headers:{Authorization:"Bearer "+key,Accept:"application/json"},
-      signal:controller.signal
+  if(!key?.startsWith("gubo_test_"))return res.status(503).json({error:"test_only"});
+  const controller=new AbortController();const t=setTimeout(()=>controller.abort(),10000);
+  try{
+    const r=await fetch("https://api.gubo.com.br/v1/catalogo/variantes?disponivel=true&limite=1",{
+      headers:{Authorization:"Bearer "+key,Accept:"application/json"},signal:controller.signal
     });
-    const catalog=await cat.json();
-    const sku=cat.status===200?catalog.dados?.[0]?.sku:null;
-    if(!sku)return res.status(200).json({catalogStatus:cat.status,quoteStatus:null,catalogError:catalog.erro?.codigo||null});
-    const response=await fetch(base+"/fretes/cotacoes",{
-      method:"POST",
-      headers:{Authorization:"Bearer "+key,"Content-Type":"application/json",Accept:"application/json"},
-      body:JSON.stringify({cep:"01310-100",itens:[{sku,quantidade:1}],entrega:{preferencia:"mais_barata"}}),
-      signal:controller.signal
-    });
-    const quote=await response.json();
+    const catalog=await r.json();
+    const sku=catalog.dados?.[0]?.sku;
+    if(!sku)return res.status(200).json({catalogStatus:r.status,status:"no_variant"});
+    const quoteHandler=require("./shipping-quote");
+    const mockedRes={
+      code:null,body:null,
+      setHeader(){return this;},
+      status(code){this.code=code;return this;},
+      json(value){this.body=value;return this;}
+    };
+    await quoteHandler({method:"POST",
+      headers:{"content-type":"application/json","x-forwarded-for":"swc-internal-quote-smoke"},
+      body:{cep:"01310100",items:[{sku,quantity:1}]}
+    },mockedRes);
     return res.status(200).json({
-      catalogStatus:cat.status,quoteStatus:response.status,
-      quoteState:quote.situacao||null,
-      errorCode:quote.erro?.codigo||null,
-      optionsCount:Array.isArray(quote.opcoes)?quote.opcoes.length:null,
-      isTest:true,createdOrders:0,charged:false
+      endpointStatus:mockedRes.code,
+      quoteReady:mockedRes.body?.status==="ready",
+      optionsCount:mockedRes.body?.options?.length||0,
+      error:mockedRes.body?.error||null,
+      createdOrders:0,paid:false
     });
-  }catch(e){return res.status(502).json({error:e?.name==="AbortError"?"timeout":"gubo_unreachable"});}
+  }catch(e){return res.status(502).json({error:e?.name==="AbortError"?"timeout":"smoke_failed"});}
   finally{clearTimeout(t);}
 };
