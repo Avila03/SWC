@@ -1,56 +1,53 @@
-// Diagnóstico temporário restrito a requisições GET de leitura.
-// Nunca retorna chave ou dados dos pedidos/clientes.
-const endpoints = [
-  ["conexao","/v1/conexao"],
-  ["vinculos","/v1/vinculos"],
-  ["produtos","/v1/produtos"],
-  ["catalogo","/v1/catalogo"],
-  ["variantes","/v1/variantes"],
-  ["pedidos","/v1/pedidos"],
-  ["itens","/v1/itens"]
-];
-const docs=[
-  ["public-docs","https://gubo.com.br/docs-api/inicio-rapido"],
-  ["public-docs-index","https://gubo.com.br/docs-api"],
-  ["public-docs-errors","https://gubo.com.br/docs-api/erros"]
-];
-async function getStatus(url,headers={}) {
-  const controller=new AbortController();
-  const timer=setTimeout(()=>controller.abort(),6500);
-  try{
-    const response=await fetch(url,{method:"GET",headers,redirect:"follow",signal:controller.signal});
-    const text=(await response.text()).slice(0,300000);
-    const type=response.headers.get("content-type")||"";
-    const data={status:response.status,type,host:new URL(response.url).hostname};
-    if(type.includes("application/json")) {
-      try {
-        const parsed=JSON.parse(text);
-        data.shape=Array.isArray(parsed)?"array":typeof parsed;
-        if(Array.isArray(parsed))data.count=parsed.length;
-        else if(parsed && typeof parsed==="object"){
-          data.keys=Object.keys(parsed).slice(0,15);
-          // APIs que retornam erro: mostrar só o código, sem campos de clientes.
-          data.errorCode=parsed.erro?.codigo||parsed.error?.code||parsed.codigo||null;
-          data.fieldShape=Object.entries(parsed).filter(([,value])=>Array.isArray(value)).map(([name,arr])=>({name,count:arr.length})).slice(0,5);
-        }
-      }catch{data.jsonInvalid=true;}
-    } else if(type.includes("text/html")){
-      data.title=text.match(/<title[^>]*>([^<]{0,160})<\/title>/i)?.[1]||"";
-      data.length=text.length;
-      data.headings=[...text.matchAll(/<h[1-4][^>]*>([\s\S]*?)<\/h[1-4]>/gi)].slice(0,10).map(x=>x[1].replace(/<[^>]+>/g,"").trim());
+// Temporary read-only diagnostic. Never return bearer token or customer information.
+const DOCS_BASE="https://gubo.com.br";
+function publicFields(data, depth=0) {
+  if (depth > 2 || data===null || data===undefined) return null;
+  if (Array.isArray(data)) return {type:"array",length:data.length,first:data.length?publicFields(data[0],depth+1):null};
+  if (typeof data==="object") {
+    const fields={};
+    for(const [key,value] of Object.entries(data).slice(0,30)) {
+      if (/senha|token|chave|secret|email|cpf|cnpj|telefone|endereco|nome_cliente|destinatario|pagamento/i.test(key)) {
+        fields[key]="[redacted]"; continue;
+      }
+      fields[key]=publicFields(value,depth+1);
     }
-    return data;
-  }catch(e){return {status:null,error:e.name==="AbortError"?"timeout":"unreachable"};}
-  finally{clearTimeout(timer);}
+    return fields;
+  }
+  if (typeof data==="string") return data.slice(0,100);
+  if (typeof data==="number"||typeof data==="boolean") return data;
+  return String(typeof data);
 }
-module.exports=async function handler(req,res) {
-  res.setHeader("Cache-Control","no-store");
+async function fetchDoc(path) {
+  const controller=new AbortController(); const timer=setTimeout(()=>controller.abort(),6500);
+  try {
+    const r=await fetch(DOCS_BASE+path,{signal:controller.signal,headers:{Accept:"text/html"}});
+    const html=await r.text();
+    const title=html.match(/<title[^>]*>([^<]+)<\/title>/i)?.[1]||"";
+    const main=html.match(/<main[^>]*>([\s\S]+?)<\/main>/i)?.[1]||html;
+    const clean=main.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi," ")
+      .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi," ")
+      .replace(/<[^>]*>/g," ").replace(/&nbsp;|&#160;/gi," ")
+      .replace(/&lt;/gi,"<").replace(/&gt;/gi,">").replace(/&quot;/gi,'"')
+      .replace(/&amp;/gi,"&").replace(/\s+/g," ").trim();
+    const links=[...new Set([...main.matchAll(/href="(\/docs-api[^"]*)"/g)].map(x=>x[1]))].slice(0,65);
+    const requests=[...new Set([...clean.matchAll(/(?:GET|POST|PATCH|DELETE|PUT)\s+\/v1\/[\w/-]+/g)].map(x=>x[0]))].slice(0,30);
+    return {path,status:r.status,title,text:clean.slice(0,12500),links,requests};
+  }catch(e){return {path,error:e.name||"fetch_failed"}}
+  finally{clearTimeout(timer)}
+}
+module.exports=async function handler(req,res){
+  res.setHeader("Cache-Control","no-store");res.setHeader("X-Content-Type-Options","nosniff");
   if(req.method!=="GET")return res.status(405).json({error:"method_not_allowed"});
   const key=process.env.GUBO_API_KEY;
   if(!key||!key.startsWith("gubo_test_"))return res.status(503).json({error:"test_key_required"});
-  const results=await Promise.all(endpoints.map(async ([name,path])=>({
-    name,...await getStatus("https://api.gubo.com.br"+path,{"Authorization":"Bearer "+key,"Accept":"application/json"})
-  })));
-  const publicDocs=await Promise.all(docs.map(async ([name,url])=>({name,...await getStatus(url,{"Accept":"text/html"})})));
-  return res.status(200).json({checks:results,docs:publicDocs});
+  const docs=await Promise.all(["/docs-api","/docs-api/inicio-rapido","/docs-api/vinculos","/docs-api/pedidos"].map(fetchDoc));
+  let mapping;
+  const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),6500);
+  try{
+    const r=await fetch("https://api.gubo.com.br/v1/vinculos",{headers:{Authorization:"Bearer "+key,Accept:"application/json"},signal:controller.signal});
+    const json=await r.json();
+    mapping={status:r.status,rootKeys:Object.keys(json),dataCount:json.dados?.length||0,firstRecord:publicFields(json.dados?.[0]),secondRecord:publicFields(json.dados?.[1])};
+  }catch(e){mapping={error:e.name||"failed"}}
+  finally{clearTimeout(timer)}
+  return res.status(200).json({docs,mapping});
 };
