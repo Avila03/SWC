@@ -27,20 +27,28 @@ Todos os valores financeiros usam centavos em inteiros. Referências externas e 
 
 A consulta de verificação retornou **zero pedidos, zero pagamentos e zero envios**. Nenhuma compra foi disparada ao criar o banco.
 
-## Próxima integração Vercel ⇄ Supabase
+## Integração Vercel ⇄ Supabase confirmada (12/11/2026)
 
-As variáveis Supabase ainda **não** foram adicionadas ao projeto Vercel. Para conectar o backend:
+As variáveis `SUPABASE_URL` e `SUPABASE_SECRET_KEY` estão cadastradas como **Sensitive** em produção no Vercel da SWC.
 
-1. No dashboard do Supabase, abrir **Project Settings → API Keys** e obter uma *secret key* adequada para acesso de backend. Se disponível, preferir uma chave nova `sb_secret_...` em vez de usar um `service_role` legado.
-2. No projeto Vercel `swampchill`, configurar **Sensitive** `SUPABASE_SECRET_KEY`, apenas no ambiente necessário. Nunca informar a chave no chat ou versionar no Git.
-3. Definir `SUPABASE_URL=https://sclerlfknowmjwceehwh.supabase.co`.
-4. Fazer novo deploy e construir uma rota server-side de diagnóstico que apenas verifica conexão (sem expor chave ou dados de clientes).
-5. Implementar endpoint seguro de sessão de checkout que derive os valores do catálogo comercial, confirme os SKUs ativos e valide a cotação de frete.
-6. Implementar pagamentos Mercado Pago no **sandbox**, com registro atômico e idempotência. Não criar pagamentos sem persistência e proteção contra duplicações.
-7. Implementar webhooks assinados de Mercado Pago e Gubo, confirmar pagamentos consultando a API e só então preparar produção.
+O backend Vercel autenticou com a API REST do Supabase e consultou `public.swc_orders` em modo somente leitura, com **HTTP 200**. O teste não criou, atualizou ou removeu registros.
 
-**Importante:** o token do Mercado Pago está configurado e autenticado, mas isso não autoriza ativar cobranças reais; o webhook seguro, processamento de pedidos e testes end-to-end ainda precisam ser concluídos.
+A camada reutilizável em `lib/supabase-server.js` restringe a conexão ao host do projeto `sclerlfknowmjwceehwh.supabase.co` e à lista das seis tabelas internas. Ela utiliza a chave apenas no servidor, nunca no navegador.
 
-Referências de segurança:
+O status público de preparação é exibido por `GET /api/mercadopago-readiness`. Esse endpoint não devolve chaves nem detalhes do banco.
+
+## Próxima etapa — registrar pedidos e integrar Pix em ambiente de testes
+
+1. Definir uma criação de pedido transacional e idempotente, validando SKUs e preços no backend antes de gravar registros.
+2. Implementar formulário de entrega da SWC com validação e armazenamento protegido de dados pessoais, sem CPF ou endereço em `localStorage`.
+3. Verificar explicitamente o ambiente das credenciais de Mercado Pago antes de criar qualquer cobrança de teste.
+4. Integrar a criação de cobrança Pix em sandbox com chave de idempotência e vínculo ao pedido persistido.
+5. Implementar webhook autenticado do Mercado Pago, com o segredo `MP_WEBHOOK_SECRET`; confirmar cada pagamento diretamente na API.
+6. Somente após confirmação segura e persistida do pagamento, criar pedido Gubo usando `Idempotency-Key`, registrar e acompanhar estados da produção.
+7. Executar os casos de teste: duplicidade de webhook, pagamento expirado, falha de entrega, cancelamento e reembolso. Habilitar cobranças reais somente depois.
+
+**Atualmente:** nenhum checkout foi habilitado; o catálogo e a cotação Gubo seguem em modo de teste. O banco continua vazio.
+
+Referências:
 - https://supabase.com/docs/guides/database/postgres/row-level-security
 - https://supabase.com/docs/guides/api/securing-your-api
