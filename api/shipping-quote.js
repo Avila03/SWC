@@ -43,7 +43,7 @@ async function availableSkus(key) {
     url.searchParams.set("disponivel","true");
     url.searchParams.set("limite","100");
     if(cursor)url.searchParams.set("cursor",cursor);
-    const r=await gubo(url.pathname+url.search,key);
+    const r=await gubo("/catalogo/variantes"+url.search,key);
     if(r.status!==200 || !Array.isArray(r.data?.dados))throw new Error("catalog_unavailable");
     for(const item of r.data.dados) {
       if(item?.disponivel === true && item?.sku && item?.produto)out.add(String(item.sku));
