@@ -53,6 +53,30 @@ async function readAll(path, key) {
   }
   throw new Error("gubo_page_limit");
 }
+// Reúne todas as URLs de imagem que a Gubo devolve para o produto (capa, mockups, galerias),
+// para o navegador tentar em ordem caso a primeira não carregue.
+function guboImages(product) {
+  const found = [];
+  const visit = (value, key, depth) => {
+    if (depth > 3 || found.length >= 12 || value == null) return;
+    if (typeof value === "string") {
+      const looksImage = /imag|mockup|foto|photo|thumb|capa|preview|arte/i.test(key) ||
+        /\.(png|jpe?g|webp|avif)(\?|$)/i.test(value);
+      const fixed = value.startsWith("//") ? "https:" + value : value;
+      const safe = looksImage ? safeImage(fixed) : null;
+      if (safe && !found.includes(safe)) found.push(safe);
+      return;
+    }
+    if (Array.isArray(value)) { for (const item of value) visit(item, key, depth + 1); return; }
+    if (typeof value === "object") {
+      for (const [k, v] of Object.entries(value)) visit(v, key + "." + k, depth + 1);
+    }
+  };
+  visit(product, "", 0);
+  // A URL principal vem por último entre as da Gubo: hoje ela pode apontar para uma página 404.
+  const primary = safeImage(product?.imagem_url);
+  return primary ? [...found.filter(u => u !== primary), primary] : found;
+}
 function localProduct(p) {
   return {
     id:p.id,name:p.name,category:p.category||"SWC",
@@ -100,10 +124,12 @@ module.exports = async function handler(req,res) {
       // A loja mantém nome e preço. A Gubo fornece imagens e variantes de produção.
       const match = (p.guboProductCode && byCode.get(String(p.guboProductCode))) || byName.get(normalize(p.name));
       const variants = match ? (variantsByCode.get(String(match.codigo))||[]) : [];
-      const image = safeImage(match?.imagem_url);
+      const own = (p.images||[]).map(safeImage).filter(Boolean);
+      const remote = match ? guboImages(match) : [];
       return {
         ...localProduct(p),
-        images:image?[image,...(p.images||[]).map(safeImage).filter(Boolean)]:localProduct(p).images,
+        // Fotos próprias da SWC têm prioridade; depois as da Gubo.
+        images:[...own,...remote.filter(u=>!own.includes(u))].slice(0,8),
         variants,
         variantStatus:variants.length?"mapped":"pending",
         source:match?"gubo":"swc",

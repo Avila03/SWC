@@ -175,16 +175,29 @@
     const card = element("article", "product-card");
     const visual = element("div", "product-visual visual-tee");
     visual.append(element("span", "product-label", "SWC / COLEÇÃO"));
-    if (product.images?.[0]) {
+    const sources = (product.images || []).filter(src => typeof src === "string");
+    const showFallback = () => {
+      visual.classList.add("no-photo");
+      visual.append(element("p", "product-no-photo", "Imagem em breve"));
+    };
+    if (sources.length) {
       const photo = document.createElement("img");
       photo.className = "product-photo";
-      photo.src = product.images[0];
       photo.alt = "Foto do produto " + product.name;
       photo.loading = "lazy";
       photo.decoding = "async";
+      let attempt = 0;
+      // Se uma URL falhar, tenta a próxima; sem nenhuma válida, mostra o aviso da marca em vez da imagem quebrada.
+      photo.addEventListener("error", () => {
+        attempt += 1;
+        if (attempt < sources.length) { photo.src = sources[attempt]; return; }
+        photo.remove();
+        showFallback();
+      });
+      photo.src = sources[0];
       visual.append(photo);
     } else {
-      visual.append(element("p", "product-no-photo", "Imagem em breve"));
+      showFallback();
     }
     visual.append(element("span", "product-ghost", String(index + 1).padStart(2, "0")));
     const info = element("div", "product-info");
