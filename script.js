@@ -68,15 +68,12 @@
     if (product.description) details.append(textEl("p", "product-description", product.description));
     const controls = textEl("div", "product-controls");
     if (!variants.length) {
-      controls.append(textEl("p", "product-prelaunch", "Cores, tamanhos e compra na Gubo Store"));
-      const storeLink = document.createElement("a");
-      storeLink.className = "add-btn product-store-link";
-      storeLink.href = "https://gubo.com.br/loja/swampchill";
-      storeLink.target = "_blank";
-      storeLink.rel = "noopener noreferrer";
-      storeLink.textContent = "Ver na loja Gubo ↗";
-      storeLink.setAttribute("aria-label", "Abrir a loja oficial da Swamp Chill na Gubo");
-      controls.append(storeLink);
+      controls.append(textEl("p", "product-prelaunch", "Produto temporariamente indisponível"));
+      const unavailable = textEl("button", "add-btn product-disabled", "Indisponível");
+      unavailable.type = "button";
+      unavailable.disabled = true;
+      unavailable.setAttribute("aria-label", "Este produto está temporariamente indisponível");
+      controls.append(unavailable);
       info.append(details, controls);
       card.append(visual, info);
       return card;
@@ -117,9 +114,9 @@
     if (!cards.length) return;
     grid.replaceChildren(...cards);
     const intro = document.querySelector(".section-top > p");
-    if (intro) intro.textContent = "Peças da SWC cadastradas na Gubo. Para ver fotos, cores e tamanhos e comprar, acesse a loja oficial pela Gubo Store.";
+    if (intro) intro.textContent = "Peças da SWC sincronizadas com a Gubo: veja as fotos e escolha cor e tamanho. O checkout será ativado após os testes de pagamento e produção.";
     const note = document.querySelector(".collection-note");
-    if (note) note.textContent = "* A vitrine SWC exibe um resumo; compras são feitas exclusivamente na Gubo Store. O catálogo ainda não sincroniza automaticamente.";
+    if (note) note.textContent = "* Os produtos e variantes vêm diretamente da Gubo. Nenhum pagamento ou pedido pode ser finalizado nesta versão.";
   }
   loadCatalog().catch(() => {
     const grid = document.querySelector(".products");
