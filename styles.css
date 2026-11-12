@@ -93,3 +93,8 @@ footer{background:#0B2416}
 .hero-art{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
 .hero-art-caption,.hero-art-bottom{position:static;text-align:center}
 .hero-art .graffiti{height:auto;max-height:calc(100% - 70px);width:auto;max-width:min(100%,520px);aspect-ratio:1}
+/* Cabeçalho fixo no topo durante a rolagem */
+body{overflow-x:clip}
+html{scroll-padding-top:96px}
+.site-header{position:sticky;top:0;z-index:50;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+@media(max-width:700px){html{scroll-padding-top:76px}}
