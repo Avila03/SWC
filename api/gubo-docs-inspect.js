@@ -40,7 +40,7 @@ module.exports=async function handler(req,res){
   if(req.method!=="GET")return res.status(405).json({error:"method_not_allowed"});
   const key=process.env.GUBO_API_KEY;
   if(!key||!key.startsWith("gubo_test_"))return res.status(503).json({error:"test_key_required"});
-  const docs=await Promise.all(["/docs-api","/docs-api/inicio-rapido","/docs-api/vinculos","/docs-api/pedidos"].map(fetchDoc));
+  const docs=await Promise.all(["/docs-api","/docs-api/inicio-rapido","/docs-api/vinculos","/docs-api/pedidos","/docs-api/catalogo"].map(fetchDoc));
   let mapping;
   const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),6500);
   try{
@@ -49,5 +49,29 @@ module.exports=async function handler(req,res){
     mapping={status:r.status,rootKeys:Object.keys(json),dataCount:json.dados?.length||0,firstRecord:publicFields(json.dados?.[0]),secondRecord:publicFields(json.dados?.[1])};
   }catch(e){mapping={error:e.name||"failed"}}
   finally{clearTimeout(timer)}
-  return res.status(200).json({docs,mapping});
+  const urls=[
+    "https://api.gubo.com.br/v1/catalogo/variantes?limite=100",
+    "https://api.gubo.com.br/v1/catalogo/variantes?disponivel=true&limite=100"
+  ];
+  const variantSamples=await Promise.all(urls.map(async url=>{
+    const controller=new AbortController();const t=setTimeout(()=>controller.abort(),7000);
+    try{
+      const r=await fetch(url,{headers:{Authorization:"Bearer "+key,Accept:"application/json"},signal:controller.signal});
+      const body=await r.json();
+      const summary={status:r.status,query:url.split("?")[1],keys:Object.keys(body),count:body.dados?.length||0,temMais:body.tem_mais,first:publicFields(body.dados?.[0]),second:publicFields(body.dados?.[1])};
+      if(Array.isArray(body.dados)){
+        const productStats={};
+        body.dados.forEach(v=>{
+          const code=v.produto?.codigo||v.produto||v.codigo_produto||"unknown";
+          const key=typeof code==="string"?code:"unknown";
+          const entry=productStats[key]||(productStats[key]={name:v.produto?.nome||"",count:0,available:0});
+          entry.count++; if(v.disponivel)entry.available++;
+        });
+        summary.grouping=productStats;
+      }
+      return summary;
+    }catch(e){return {error:e.name||"failed"}}
+    finally{clearTimeout(t)}
+  }));
+  return res.status(200).json({docs,mapping,variantSamples});
 };
