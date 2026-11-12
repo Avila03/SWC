@@ -232,6 +232,7 @@
     if (sizes.length) row("Tamanhos", sizes.join(" · "));
     row("Valor", money(product.priceCents));
     details.append(sheet);
+    details.append(element("p", "product-price", money(product.priceCents)));
     if (product.description) details.append(element("p", "product-description", product.description));
     const controls = element("div", "product-controls");
     if (!variants.length) {

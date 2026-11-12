@@ -192,15 +192,6 @@ body{background:var(--g-deep)}
 .g-root-node.is-in span{transform:scaleY(1)}
 .g-root-node.is-in img{opacity:.85;clip-path:inset(0 0 0 0)}
 
-/* 9 · Olhos do pântano (estudo) */
-.g-next{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:40px}
-.g-eyes{width:clamp(110px,12vw,170px);opacity:0;transform:translateY(8px);transition:opacity 2.4s ease 0.6s,transform 2.4s ease .6s;margin-bottom:12px}
-.g-eyes.is-in{opacity:.9;transform:none}
-.g-eyes svg{width:100%;height:auto;display:block;overflow:visible}
-.g-eye{transform-box:fill-box;transform-origin:center;transition:transform .12s ease}
-.g-eye path{fill:#06170e;stroke:var(--g-gold);stroke-width:1.4}
-.g-eye ellipse{fill:var(--g-gold)}
-.g-eyes.blink .g-eye{transform:scaleY(.08)}
 
 /* 1 · Peças como obras: sombra, reflexo e frente/costas */
 .g-collection .product-visual{overflow:hidden;perspective:1400px}
@@ -252,11 +243,43 @@ body{background:var(--g-deep)}
 
 @media(max-width:760px){
   .g-next{grid-template-columns:1fr;justify-items:start}
-  .g-eyes{justify-self:end;width:110px}
   .g-ghost-num{font-size:46vw}
   .g-water{height:100px}
 }
 @media(prefers-reduced-motion:reduce){
-  .g-water g,.g-eyes,.g-root-node *{animation:none;transition:none}
+  .g-water g,.g-root-node *{animation:none;transition:none}
 }
 @media(max-width:760px){.g-section{padding-top:140px}}
+
+/* Coleção compacta: mais peças por tela (4 por fileira no computador, 2 no celular) */
+.g-collection .g-products{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))!important;gap:56px 32px;max-width:1240px!important}
+.g-collection .product-visual{outline-offset:-12px}
+.g-collection .product-label{top:22px;left:22px;font-size:12px}
+.g-collection .product-info{padding-top:20px;gap:16px}
+.g-collection .product-info h3{font-size:23px;margin:8px 0 12px}
+.product-sheet{font-size:11.5px;gap:4px 16px}
+.product-sheet dt{font-size:9px}
+.product-price{display:none}
+.g-collection .product-controls{grid-template-columns:1fr;gap:8px;padding-top:16px}
+.g-collection .product-variant,.g-collection .add-btn{min-height:42px}
+.g-collection .add-btn{font-size:9.5px;letter-spacing:.2em;padding:12px}
+.product-flip-hint{right:22px;bottom:20px;font-size:8px}
+.g-next{grid-template-columns:1fr}
+@media(max-width:760px){
+  .g-collection .g-products{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:34px 12px}
+  .g-collection .product-visual{outline-offset:-7px}
+  .g-collection .product-label{top:12px;left:12px;font-size:10px}
+  .product-stage{inset:12% 10% 20%}
+  .product-flip-hint{display:none}
+  .g-collection .product-no-photo{font-size:14px}
+  .g-collection .product-info{padding-top:12px;gap:10px}
+  .g-collection .product-number{font-size:8px;letter-spacing:.2em}
+  .g-collection .product-info h3{font-size:17px;margin:5px 0 4px}
+  .g-collection .product-sheet{display:none}
+  .product-price{display:block;margin:0;font:600 12px var(--g-sans);color:var(--g-gold)}
+  .g-collection .product-controls{padding-top:10px;gap:6px}
+  .g-collection .product-variant-label{font-size:0;gap:0}
+  .g-collection .product-variant{font-size:12px;min-height:38px;padding:8px 6px}
+  .g-collection .add-btn{min-height:38px;font-size:8.5px;letter-spacing:.12em;padding:10px 4px}
+}
+@media(max-width:760px){.g-collection .product-info .product-price{color:var(--g-gold)}}
