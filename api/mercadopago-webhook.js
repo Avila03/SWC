@@ -8,6 +8,7 @@
 const crypto = require("crypto");
 const { getOrderStatus, isConfigured: mpConfigured } = require("../lib/mercadopago-server");
 const { dbRpc, isConfigured: supabaseConfigured } = require("../lib/supabase-server");
+const { submitPaidOrder } = require("../lib/fulfillment-server");
 
 function respond(res, status, body) { return res.status(status).json(body); }
 
@@ -91,6 +92,13 @@ module.exports = async function handler(req, res) {
     });
     // Pagamento ainda não registrado (corrida com o checkout): pede reenvio.
     if (result?.result === "retry") return respond(res, 409, { result: "retry" });
+    // Pedido pago: envia para produção na Gubo (se SWC_GUBO_AUTO_SUBMIT=enabled). Falha aqui não
+    // desfaz o pagamento; fica registrada no histórico do pedido para novo envio.
+    if (result?.became_paid === true && result?.order_id) {
+      stage = "gubo";
+      try { await submitPaidOrder(result.order_id); }
+      catch (error) { console.error("gubo_submit_failed", error?.status || null, error?.code || null); }
+    }
     return respond(res, 200, { result: result?.result || "processed" });
   } catch (error) {
     console.error("mp_webhook_failed", stage, error?.message, error?.status || null, error?.code || null);

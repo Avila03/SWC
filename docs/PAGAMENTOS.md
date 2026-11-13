@@ -61,3 +61,13 @@ Endpoint: `POST https://swampchill.vercel.app/api/mercadopago-webhook` (evento *
 Mapeamento: aprovado/`processed`+`accredited` → pedido `paid`; recusado, cancelado, expirado ou falha → `cancelled`; estorno/chargeback → `refunded`; demais → aguardando.
 
 **Para ativar:** no painel do Mercado Pago (Suas integrações → aplicação → Webhooks → modo de teste) cadastrar a URL acima com o evento *Order*, copiar a assinatura secreta e criar `MP_WEBHOOK_SECRET` no Vercel (Production).
+
+## Envio do pedido pago para a Gubo (implementado em 13/11/2026, desligado por padrão)
+
+Quando o webhook confirma que o pedido **acabou de virar `paid`**, `lib/fulfillment-server.js` cria o pedido na Gubo:
+`POST /v1/pedidos/por-variante` com `referencia` = número do pedido SWC, `Idempotency-Key: swc-gubo-<id>`, itens por SKU, destinatário e o serviço de frete escolhido (`se_indisponivel: pendencia`).
+
+- Liga com `SWC_GUBO_AUTO_SUBMIT=enabled` e só funciona com chave `gubo_test_`.
+- Registra em `swc_fulfillments` (um por pedido) e no histórico (`gubo_submitted` / `gubo_submit_failed`). Pedido vai para `production_pending`.
+- **Não paga a produção** (`POST /pedidos/{id}/pagar`): isso usa o saldo da conta Gubo e depende de decisão operacional.
+- Falha no envio não desfaz o pagamento; fica no histórico para novo envio.
