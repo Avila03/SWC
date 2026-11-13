@@ -47,3 +47,17 @@ Documentação:
 - https://www.mercadopago.com.br/developers/pt/docs/checkout-api-orders/resources/credentials
 - https://www.mercadopago.com.br/developers/pt/docs/checkout-api-orders/payment-integration/websites/pix
 - https://www.mercadopago.com.br/developers/pt/docs/checkout-api-orders/optional-notifications
+
+## Webhook do Mercado Pago (implementado em 13/11/2026)
+
+Endpoint: `POST https://swampchill.vercel.app/api/mercadopago-webhook` (evento **Order**).
+
+1. Valida `x-signature` com HMAC-SHA256 e o manifesto `id:<data.id em minúsculas>;request-id:<x-request-id>;ts:<ts>;`. Assinatura inválida → 401.
+2. Não confia no corpo: reconsulta `GET /v1/orders/{id}` e usa só o estado oficial.
+3. Ignora (200) notificações que não são de order ou cuja `external_reference` não é um pedido SWC.
+4. Aplica via `swc_apply_payment_update` (atômica): confere referência e valor, atualiza pagamento e pedido, grava histórico. A mesma transição de estado nunca é aplicada duas vezes; pagamento aprovado não regride.
+5. Pagamento ainda não registrado → 409 para o Mercado Pago reenviar. Erro interno → 500. Sem `MP_WEBHOOK_SECRET` → 503.
+
+Mapeamento: aprovado/`processed`+`accredited` → pedido `paid`; recusado, cancelado, expirado ou falha → `cancelled`; estorno/chargeback → `refunded`; demais → aguardando.
+
+**Para ativar:** no painel do Mercado Pago (Suas integrações → aplicação → Webhooks → modo de teste) cadastrar a URL acima com o evento *Order*, copiar a assinatura secreta e criar `MP_WEBHOOK_SECRET` no Vercel (Production).
