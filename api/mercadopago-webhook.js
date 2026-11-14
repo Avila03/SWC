@@ -101,6 +101,10 @@ module.exports = async function handler(req, res) {
     }
     return respond(res, 200, { result: result?.result || "processed" });
   } catch (error) {
+    // Order inexistente no Mercado Pago (ex.: "simular notificação" do painel com id fictício): confirma e ignora.
+    if (stage === "lookup" && error?.message === "mp_get_failed" && error?.status === 404) {
+      return respond(res, 200, { result: "ignored", reason: "order_not_found" });
+    }
     console.error("mp_webhook_failed", stage, error?.message, error?.status || null, error?.code || null);
     return respond(res, 500, { error: "processing_failed" });
   }
