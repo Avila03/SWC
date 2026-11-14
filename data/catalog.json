@@ -2,8 +2,12 @@
   "version": 1,
   "collections": [
     {
+      "id": "especimes",
+      "name": "Espécimes"
+    },
+    {
       "id": "colecao-01",
-      "name": "Coleção 01"
+      "name": "Oversized Verde Musgo"
     },
     {
       "id": "colecao-02",
@@ -12,6 +16,36 @@
     }
   ],
   "products": [
+    {
+      "id": "sombra-viva",
+      "name": "Sombra Viva",
+      "category": "Camisetas Oversized",
+      "description": "",
+      "priceCents": 14990,
+      "images": [],
+      "active": true,
+      "variants": [],
+      "source": "gubo-studio",
+      "productLinkStatus": "pending",
+      "guboProductCode": "P261111513",
+      "collection": "especimes",
+      "priceStatus": "provisional"
+    },
+    {
+      "id": "triade-x-verso",
+      "name": "Tríade — X Verso",
+      "category": "Camisetas Oversized",
+      "description": "",
+      "priceCents": 14990,
+      "images": [],
+      "active": true,
+      "variants": [],
+      "source": "gubo-studio",
+      "productLinkStatus": "pending",
+      "guboProductCode": "P261111511",
+      "collection": "especimes",
+      "priceStatus": "provisional"
+    },
     {
       "id": "pantano",
       "name": "pantano",
