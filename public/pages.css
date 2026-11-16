@@ -1,10 +1,10 @@
 /* =====================================================================
    SWC — Página da peça e checkout (Galeria do Pântano)
    ===================================================================== */
-.p-page [hidden]{display:none!important}
+
 .p-page{background:var(--g-deep);color:var(--g-ivory)}
-.p-page a.bag-trigger{display:inline-flex;align-items:center;gap:10px;color:var(--g-ivory);font:600 10.5px var(--g-sans);letter-spacing:.2em;text-transform:uppercase}
-.p-page a.bag-trigger svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.5}
+
+
 .p-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 28px;background:var(--g-gold);color:var(--g-deep);border:1px solid var(--g-gold);font:700 10.5px var(--g-sans);letter-spacing:.24em;text-transform:uppercase;cursor:pointer;transition:background .25s,color .25s,transform .2s}
 .p-btn:hover{background:#c4ab45}
 .p-btn:active{transform:translateY(1px)}
@@ -184,3 +184,68 @@
   .card-cta .g-link{font-size:8.5px;letter-spacing:.18em}
 }
 @media(prefers-reduced-motion:reduce){.p-stage.swap .p-main-img,.c-step.is-open .c-step-body,.p-added.show{animation:none}}
+
+/* =====================================================================
+   Varredura geral — navegação, acessibilidade, celular e novos blocos
+   ===================================================================== */
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--g-gold);outline-offset:3px}
+a.bag-trigger{display:inline-flex;align-items:center;gap:10px;color:var(--g-ivory);font:600 10.5px var(--g-sans);letter-spacing:.2em;text-transform:uppercase;min-height:44px}
+a.bag-trigger svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.5}
+.g-footer img{height:46px;width:auto}
+
+/* Menu no celular */
+.g-menu{display:none;width:44px;height:44px;background:none;border:1px solid var(--g-hair);cursor:pointer;position:relative}
+.g-menu i{position:absolute;left:12px;right:12px;height:1px;background:var(--g-gold);transition:transform .3s,top .3s}
+.g-menu i:first-child{top:17px}.g-menu i:last-child{top:25px}
+.g-menu[aria-expanded="true"] i:first-child{top:21px;transform:rotate(45deg)}
+.g-menu[aria-expanded="true"] i:last-child{top:21px;transform:rotate(-45deg)}
+@media(max-width:760px){
+  .g-menu{display:block}
+  .g-actions{gap:12px}
+  .g-header .g-nav{display:flex;flex-direction:column;gap:0;position:absolute;left:0;right:0;top:100%;background:rgba(11,36,22,.98);border-bottom:1px solid var(--g-hair);padding:6px 22px 14px;visibility:hidden;opacity:0;transform:translateY(-8px);transition:opacity .25s,transform .25s,visibility .25s}
+  .g-header .g-nav.open{visibility:visible;opacity:1;transform:none}
+  .g-header .g-nav a{padding:16px 0;border-bottom:1px solid var(--g-hair);font-size:11px}
+  .g-header .g-nav a:last-child{border-bottom:0}
+  a.bag-trigger span:not(.bag-count){display:none}
+}
+
+/* Carregamento da coleção */
+.card-skeleton{aspect-ratio:4/5;background:linear-gradient(110deg,rgba(29,74,46,.5) 30%,rgba(45,98,64,.55) 50%,rgba(29,74,46,.5) 70%);background-size:220% 100%;animation:sk 1.6s linear infinite;outline:1px solid var(--g-hair);outline-offset:-12px}
+@keyframes sk{to{background-position:-220% 0}}
+.g-products .catalog-loading{grid-column:1/-1;margin:0}
+a.product-visual{display:block}
+.g-collection .product-card{transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.g-collection .product-visual:focus-visible{outline-offset:4px}
+
+/* Como funciona */
+.g-how{background:var(--g-base);border-top:1px solid var(--g-hair)}
+.g-how-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border:1px solid var(--g-hair);max-width:1240px}
+.g-how-list li{padding:clamp(22px,2.6vw,36px);border-right:1px solid var(--g-hair)}
+.g-how-list li:last-child{border-right:0}
+.g-how-list span{font:500 13px var(--g-serif);letter-spacing:.12em;color:var(--g-gold)}
+.g-how-list h3{font:400 26px var(--g-serif);color:var(--g-ivory);margin:14px 0 10px}
+.g-how-list p{font:400 13px/1.7 var(--g-sans);color:var(--g-mute);margin:0}
+@media(max-width:900px){.g-how-list{grid-template-columns:repeat(2,minmax(0,1fr))}.g-how-list li:nth-child(2){border-right:0}.g-how-list li:nth-child(-n+2){border-bottom:1px solid var(--g-hair)}}
+@media(max-width:520px){.g-how-list{grid-template-columns:1fr}.g-how-list li{border-right:0;border-bottom:1px solid var(--g-hair)}.g-how-list li:last-child{border-bottom:0}}
+
+/* Barra de compra fixa (celular) */
+.p-sticky{display:none}
+@media(max-width:900px){
+  .p-sticky{position:fixed;left:0;right:0;bottom:0;z-index:70;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:12px 18px calc(12px + env(safe-area-inset-bottom));background:rgba(11,36,22,.97);border-top:1px solid var(--g-gold)}
+  .p-sticky strong{display:block;font:400 17px var(--g-serif);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .p-sticky span{font:600 12px var(--g-sans);color:var(--g-gold)}
+  .p-sticky .p-btn{min-height:46px;padding:0 22px}
+  .p-added{bottom:84px}
+  .p-page .g-footer{padding-bottom:96px}
+}
+
+/* 404 e estados do checkout */
+.p-404{min-height:62vh;display:grid;align-content:center;justify-items:start;gap:8px}
+.p-404 .p-title em{font-style:italic;color:var(--g-gold)}
+.p-404 .p-btn{margin-top:26px}
+.c-status{margin:0;font:600 10px var(--g-sans);letter-spacing:.24em;text-transform:uppercase;color:var(--g-gold);display:flex;align-items:center;gap:10px}
+.c-status::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--g-gold);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+.c-result.is-paid{border-color:var(--g-gold);background:radial-gradient(circle at 50% 0,rgba(176,151,50,.16),rgba(11,36,22,.9) 70%)}
+@media(prefers-reduced-motion:reduce){.card-skeleton,.c-status::before{animation:none}}

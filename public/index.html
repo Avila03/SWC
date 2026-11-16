@@ -4,34 +4,47 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0B2416">
-  <meta name="description" content="Swamp Chill — qualidade raiz, exclusividade real. Uma prévia do universo SWC.">
-  <title>Swamp Chill — SWC</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta property="og:site_name" content="Swamp Chill">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:image" content="https://swampchill.vercel.app/assets/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css">
-  <link rel="stylesheet" href="./gallery.css">
-  <link rel="stylesheet" href="./pages.css">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/gallery.css">
+  <link rel="stylesheet" href="/pages.css">
+  <title>Swamp Chill — Streetwear premium · Qualidade raiz. Exclusividade real.</title>
+  <meta name="description" content="Swamp Chill (SWC): streetwear premium com assinatura de grafite e universo de pântano. Conheça a coleção Espécimes. Qualidade raiz. Exclusividade real.">
+  <meta property="og:title" content="Swamp Chill — Qualidade raiz. Exclusividade real.">
+  <meta property="og:description" content="Streetwear de respeito. Pra quem vive o hype com classe.">
+  <meta property="og:url" content="https://swampchill.vercel.app/">
+  <link rel="preload" as="image" href="/assets/swc-emblema.webp" fetchpriority="high">
   <script>document.documentElement.classList.add("js")</script>
-  <script defer src="./script.js"></script>
-  <script defer src="./gallery.js"></script>
+  <script defer src="/swc-core.js"></script>
+  <script defer src="/home.js"></script>
+  <script defer src="/gallery.js"></script>
 </head>
-<body>
+<body class="p-home">
   <a class="skip-link" href="#conteudo">Ir para conteúdo</a>
   <div class="grain" aria-hidden="true"></div>
   <header class="site-header g-header" id="topo">
     <a class="g-brand" href="#topo" aria-label="Swamp Chill, início">
-      <img src="./assets/swamp-chill-lettering.png" alt="Swamp Chill" width="959" height="558">
+      <img src="/assets/swamp-chill-lettering.webp" alt="Swamp Chill" width="320" height="186">
     </a>
-    <nav class="g-nav" aria-label="Navegação principal">
+    <nav class="g-nav" id="g-nav" aria-label="Navegação principal">
       <a href="#colecao">Coleções</a><a href="#manifesto">Essência</a><a href="#contato">Próximo drop</a>
     </nav>
     <div class="g-actions">
       <span class="g-est">EST 2026</span>
-      <button class="bag-trigger" id="open-bag" type="button" aria-label="Abrir sacola">
+      <a class="bag-trigger" href="/checkout.html" aria-label="Sacola e checkout">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 8h15l-1.2 12H5.7L4.5 8Zm4-1V6a3.5 3.5 0 0 1 7 0v1"/></svg>
-        <span>Sacola</span><span id="bag-count" class="bag-count">0</span>
-      </button>
+        <span>Sacola</span><span class="bag-count" data-bag-count>0</span>
+      </a>
+      <button class="g-menu" type="button" aria-controls="g-nav" aria-expanded="false" aria-label="Abrir menu"><i></i><i></i></button>
     </div>
   </header>
 
@@ -43,8 +56,8 @@
       <p class="g-room g-room-right">SWAMP CHILL &nbsp;·&nbsp; EST 2026</p>
       <figure class="g-piece">
         <div class="g-emblem-wrap">
-          <img class="g-emblem" src="./assets/swc-emblema.png" alt="Emblema SWC" width="900" height="892">
-          <img class="g-emblem-reflex" src="./assets/swc-emblema.png" alt="" aria-hidden="true" width="900" height="892">
+          <img class="g-emblem" src="/assets/swc-emblema.webp" alt="Emblema SWC" width="640" height="634" fetchpriority="high">
+          <img class="g-emblem-reflex" src="/assets/swc-emblema.webp" alt="" aria-hidden="true" width="640" height="634">
         </div>
       </figure>
       <span class="g-connector" aria-hidden="true"><i></i></span>
@@ -59,24 +72,25 @@
       <span>QUALIDADE RAIZ</span><b>✦</b><span>EXCLUSIVIDADE REAL</span><b>✦</b><span>PRA QUEM SABE O VALOR</span>
     </div>
 
-    <section id="colecao" class="g-section g-collection">
-      <div class="g-root-node" aria-hidden="true"><span></span><img src="./assets/swc-raiz.png" alt="" width="140" height="83" loading="lazy"></div>
+    <section id="colecao" class="g-section g-collection" aria-labelledby="col-title">
+      <div class="g-root-node" aria-hidden="true"><span></span><img src="/assets/swc-raiz.png" alt="" width="140" height="83" loading="lazy"></div>
       <span class="g-ghost-num" aria-hidden="true">02</span>
       <header class="g-section-head" data-reveal>
         <p class="g-kicker">COLEÇÕES</p>
-        <h2>Peças em <em>exposição.</em></h2>
-        <p class="g-lead">Cada peça é tratada como obra: poucas, pensadas e feitas pra durar. Escolha a sua, monte a sacola e calcule o frete aqui na SWC.</p>
+        <h2 id="col-title">Peças em <em>exposição.</em></h2>
+        <p class="g-lead">Cada peça é tratada como obra: pensada, assinada e feita sob demanda pra você. Escolha a sua.</p>
       </header>
       <div class="g-tabs" role="tablist" aria-label="Coleções" hidden></div>
       <p class="g-soon" hidden></p>
       <div class="products g-products" aria-live="polite">
-        <p class="catalog-loading">Carregando coleção SWC…</p>
+        <div class="card-skeleton" aria-hidden="true"></div><div class="card-skeleton" aria-hidden="true"></div>
+        <p class="catalog-loading">Carregando coleção…</p>
       </div>
-      <p class="collection-note">* A sacola e o frete são demonstrativos. Pedidos e pagamentos ainda não estão disponíveis.</p>
+      <noscript><p class="catalog-loading">Ative o JavaScript para ver a coleção.</p></noscript>
     </section>
 
     <section class="g-section g-manifesto" id="manifesto">
-      <div class="g-root-node" aria-hidden="true"><span></span><img src="./assets/swc-raiz.png" alt="" width="140" height="83" loading="lazy"></div>
+      <div class="g-root-node" aria-hidden="true"><span></span><img src="/assets/swc-raiz.png" alt="" width="140" height="83" loading="lazy"></div>
       <span class="g-ghost-num" aria-hidden="true">03</span>
       <div class="g-water" aria-hidden="true"><svg viewBox="0 0 1200 140" preserveAspectRatio="none"><g class="w1"><path d="M0 40 Q150 30 300 40 T600 40 T900 40 T1200 40 T1500 40 T1800 40"/></g><g class="w2"><path d="M0 70 Q150 62 300 70 T600 70 T900 70 T1200 70 T1500 70 T1800 70"/></g><g class="w3"><path d="M0 98 Q150 92 300 98 T600 98 T900 98 T1200 98 T1500 98 T1800 98"/></g><g class="w4"><path d="M0 122 Q150 117 300 122 T600 122 T900 122 T1200 122 T1500 122 T1800 122"/></g></svg></div>
       <p class="g-kicker" data-reveal>ESSÊNCIA</p>
@@ -84,52 +98,37 @@
         <p>O pântano não segue <em>tendências.</em><br>Ele cria suas próprias <em>raízes.</em></p>
       </blockquote>
       <p class="g-lead" data-reveal>Do grafite ao tecido, a Swamp Chill carrega personalidade em cada detalhe. Presença, atitude e identidade própria.</p>
-      <img class="g-seal" src="./assets/swc-emblema.png" alt="Emblema SWC" width="900" height="892" loading="lazy">
+      <img class="g-seal" src="/assets/swc-emblema-160.webp" alt="" width="160" height="158" loading="lazy">
+    </section>
+
+    <section class="g-section g-how" aria-labelledby="how-title">
+      <header class="g-section-head" data-reveal>
+        <p class="g-kicker">COMO FUNCIONA</p>
+        <h2 id="how-title">Feita <em>pra você.</em></h2>
+      </header>
+      <ol class="g-how-list">
+        <li data-reveal><span>01</span><h3>Escolha</h3><p>Abra a peça, veja frente e costas, defina cor e tamanho.</p></li>
+        <li data-reveal><span>02</span><h3>Pix</h3><p>Pagamento por Pix, com confirmação na hora.</p></li>
+        <li data-reveal><span>03</span><h3>Produção</h3><p>Sua peça é produzida sob demanda, depois do pedido.</p></li>
+        <li data-reveal><span>04</span><h3>Entrega</h3><p>Frete calculado pelo CEP, com prazo informado antes de pagar.</p></li>
+      </ol>
     </section>
 
     <section class="g-section g-next" id="contato">
-      <div class="g-root-node" aria-hidden="true"><span></span><img src="./assets/swc-raiz.png" alt="" width="140" height="83" loading="lazy"></div>
+      <div class="g-root-node" aria-hidden="true"><span></span><img src="/assets/swc-raiz.png" alt="" width="140" height="83" loading="lazy"></div>
       <div class="g-next-copy" data-reveal>
       <p class="g-kicker">EM BREVE</p>
       <h2>O próximo drop <em>está chegando.</em></h2>
       <p class="g-lead">Estamos montando esse espaço peça por peça. Acompanhe a evolução da SWC.</p>
-      <a class="g-link" href="#topo">Voltar ao início <span aria-hidden="true">↑</span></a>
+      <a class="g-link" href="#colecao">Ver as coleções <span aria-hidden="true">→</span></a>
       </div>
     </section>
   </main>
 
   <footer class="g-footer">
-    <img src="./assets/swamp-chill-lettering.png" alt="Swamp Chill" width="959" height="558" loading="lazy">
+    <img src="/assets/swamp-chill-lettering.webp" alt="Swamp Chill" width="320" height="186" loading="lazy">
     <span>QUALIDADE RAIZ. EXCLUSIVIDADE REAL.</span>
     <span>© 2026 SWC · EST 2026</span>
   </footer>
-  <div id="bag-overlay" class="bag-overlay" hidden></div>
-  <aside id="bag-panel" class="bag-panel" role="dialog" aria-modal="true" aria-labelledby="bag-title" aria-hidden="true">
-    <div class="bag-head"><div><span class="section-kicker">SWAMP CHILL</span><h2 id="bag-title">Sua sacola</h2></div><button id="close-bag" class="close-bag" type="button" aria-label="Fechar sacola">×</button></div>
-    <div id="bag-items" class="bag-items"><p class="empty-bag">Sua sacola está vazia.</p></div>
-    <section class="bag-shipping" id="bag-shipping" hidden aria-labelledby="shipping-title">
-      <h3 id="shipping-title">Entrega</h3>
-      <p class="bag-help">Calcule o frete Gubo com o CEP de destino. Esta cotação ainda é de teste.</p>
-      <form id="shipping-form" class="shipping-form">
-        <label for="shipping-cep">CEP de entrega</label>
-        <div class="shipping-form-row">
-          <input id="shipping-cep" name="cep" inputmode="numeric" autocomplete="postal-code"
-            placeholder="00000-000" maxlength="9" required pattern="[0-9]{5}-?[0-9]{3}">
-          <button type="submit" id="quote-button">Calcular</button>
-        </div>
-      </form>
-      <p id="shipping-message" class="shipping-message" role="status" aria-live="polite">Informe o CEP para consultar o frete.</p>
-      <div id="shipping-options" class="shipping-options" role="group" aria-label="Opções de entrega"></div>
-    </section>
-    <div class="bag-bottom">
-      <div class="bag-total-line"><span>Produtos</span><strong id="bag-subtotal">R$ 0,00</strong></div>
-      <div class="bag-total-line"><span>Frete</span><strong id="bag-shipping-value">A calcular</strong></div>
-      <div class="bag-total-line bag-grand-total"><span>Total estimado</span><strong id="bag-grand-total">R$ 0,00</strong></div>
-      <p class="bag-safety-note">Prévia do checkout. Nenhum pagamento ou pedido é realizado nesta etapa.</p>
-      <button id="checkout-action" class="button button-primary" type="button" disabled>Pagamento em preparação</button>
-      <button id="keep-exploring" class="button button-ghost bag-continue" type="button">Continuar explorando</button>
-    </div>
-  </aside>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

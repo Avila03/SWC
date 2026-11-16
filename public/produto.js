@@ -7,7 +7,7 @@
   const id = params.get("p");
 
   function notFound() {
-    $("#produto").replaceChildren(S.el("p", "p-loading", "Peça não encontrada."), Object.assign(S.el("a", "g-link", "Voltar às coleções →"), { href: "./#colecao" }));
+    $("#produto").replaceChildren(S.el("p", "p-loading", "Peça não encontrada."), Object.assign(S.el("a", "g-link", "Voltar às coleções →"), { href: "/#colecao" }));
   }
 
   async function init() {
@@ -20,6 +20,20 @@
     const number = "Nº " + String(Math.max(0, siblings.indexOf(product)) + 1).padStart(2, "0");
 
     document.title = product.name + " — Swamp Chill";
+    // Metadados da peça (busca e compartilhamento)
+    const desc = product.name + " · " + (product.category || "Streetwear") + " da coleção " + (collection ? collection.name : "SWC") + ". " + S.money(product.priceCents) + ". Feita sob demanda.";
+    document.querySelector('meta[name="description"]')?.setAttribute("content", desc);
+    document.querySelector('meta[property="og:title"]')?.setAttribute("content", product.name + " — Swamp Chill");
+    $("#crumb-collection").href = "/#colecao=" + encodeURIComponent(product.collection || "");
+    const firstPhoto = S.photo(product, S.colorsOf(product)[0], "back");
+    const ld = document.createElement("script"); ld.type = "application/ld+json";
+    ld.textContent = JSON.stringify({
+      "@context": "https://schema.org", "@type": "Product", name: product.name, category: product.category || undefined,
+      brand: { "@type": "Brand", name: "Swamp Chill" },
+      image: firstPhoto ? new URL(firstPhoto, location.origin).href : undefined,
+      offers: { "@type": "Offer", priceCurrency: "BRL", price: (product.priceCents / 100).toFixed(2), url: location.href.split("&")[0] }
+    });
+    document.head.append(ld);
     $("#crumb-collection").textContent = collection ? collection.name : "Coleção";
     $("#crumb-name").textContent = product.name;
 
@@ -150,17 +164,38 @@
       box.hidden = false; box.classList.remove("show"); void box.offsetWidth; box.classList.add("show");
       $("#p-added-close").focus();
     });
-    now.addEventListener("click", () => { if (addCurrent()) location.href = "./checkout.html"; });
+    now.addEventListener("click", () => { if (addCurrent()) location.href = "/checkout.html"; });
     $("#p-added-close").addEventListener("click", () => { $("#p-added").hidden = true; add.focus(); });
 
     $("#produto").replaceChildren(gallery, info);
     renderChoices(); renderGallery();
 
+    // Barra de compra fixa no celular: aparece quando o botão principal sai da tela.
+    const bar = S.el("div", "p-sticky"); bar.hidden = true;
+    const barText = S.el("div"); barText.append(S.el("strong", "", product.name), S.el("span", "", S.money(product.priceCents)));
+    const barBtn = S.el("button", "p-btn", "Adicionar"); barBtn.type = "button";
+    barBtn.addEventListener("click", () => {
+      if (!state.size) { sizeBlock.scrollIntoView({ behavior: "smooth", block: "center" }); msg.textContent = "Escolha o tamanho antes de continuar."; return; }
+      add.click();
+    });
+    bar.append(barText, barBtn); document.body.append(bar);
+    if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => { bar.hidden = e.isIntersecting; }).observe(buy);
+
+    // Setas do teclado nos grupos de cor e tamanho
+    [swatches, sizes].forEach(group => group.addEventListener("keydown", e => {
+      if (!["ArrowRight", "ArrowLeft"].includes(e.key)) return;
+      const items = [...group.querySelectorAll("button:not(:disabled)")]; const i = items.indexOf(document.activeElement);
+      if (i < 0) return; e.preventDefault();
+      const next = items[(i + (e.key === "ArrowRight" ? 1 : items.length - 1)) % items.length];
+      const label = next.getAttribute("aria-label") || next.textContent; next.click();
+      [...group.querySelectorAll("button")].find(b => (b.getAttribute("aria-label") || b.textContent) === label)?.focus();
+    }));
+
     // ----- Outras peças da coleção -----
     const others = siblings.filter(p => p.id !== product.id);
     if (others.length) {
       $("#mais-grid").replaceChildren(...others.map(p => {
-        const a = S.el("a", "p-more-card"); a.href = "./produto.html?p=" + encodeURIComponent(p.id);
+        const a = S.el("a", "p-more-card"); a.href = "/produto.html?p=" + encodeURIComponent(p.id);
         const fig = S.el("div", "p-more-img");
         const src = S.photo(p, S.colorsOf(p)[0], "back");
         if (src) { const img = S.el("img"); img.src = src; img.alt = ""; img.loading = "lazy"; img.onerror = () => { img.remove(); fig.append(S.el("span", "", "Imagem em breve")); }; fig.append(img); }

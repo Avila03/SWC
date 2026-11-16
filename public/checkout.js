@@ -42,11 +42,11 @@
     const ls = lines();
     if (!ls.length) {
       list.replaceChildren(S.el("li", "c-empty"));
-      list.firstChild.append(S.el("p", "", "Sua sacola está vazia."), Object.assign(S.el("a", "g-link", "Ver as coleções →"), { href: "./#colecao" }));
+      list.firstChild.append(S.el("p", "", "Sua sacola está vazia."), Object.assign(S.el("a", "g-link", "Ver as coleções →"), { href: "/#colecao" }));
     } else {
       list.replaceChildren(...ls.map(l => {
         const li = S.el("li", "c-item");
-        const fig = S.el("a", "c-item-img"); fig.href = "./produto.html?p=" + encodeURIComponent(l.product.id) + "&cor=" + encodeURIComponent(l.variant.color || "");
+        const fig = S.el("a", "c-item-img"); fig.href = "/produto.html?p=" + encodeURIComponent(l.product.id) + "&cor=" + encodeURIComponent(l.variant.color || "");
         const src = S.photo(l.product, l.variant.color, "back");
         if (src) { const img = S.el("img"); img.src = src; img.alt = ""; img.onerror = () => img.remove(); fig.append(img); }
         const meta = S.el("div", "c-item-meta");
@@ -267,7 +267,35 @@
     document.querySelector(".c-consent").hidden = true;
     $("#c-pay").closest(".c-step-actions").hidden = true;
     S.writeCart([]); // o pedido já foi criado; a sacola recomeça
+    document.querySelectorAll(".c-edit").forEach(b => { b.hidden = true; b.disabled = true; });
+    const status = S.el("p", "c-status", "Aguardando o pagamento…"); status.setAttribute("role", "status");
+    box.append(status);
     box.scrollIntoView({ behavior: "smooth", block: "center" });
+    watchPayment(d.orderReference, attempt.key, box, status);
+  }
+
+  // Consulta o estado do pedido até o Pix ser confirmado (a confirmação vem do webhook no servidor).
+  function watchPayment(reference, key, box, status) {
+    let tries = 0;
+    const tick = async () => {
+      tries += 1;
+      try {
+        const r = await fetch("/api/order-status", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderReference: reference, key }) });
+        const d = await r.json().catch(() => ({}));
+        if (d.status === "paid") {
+          box.replaceChildren(
+            S.el("p", "g-kicker", "PEDIDO " + reference),
+            S.el("h3", "", "Pagamento confirmado."),
+            S.el("p", "c-note", "Sua peça entrou na fila de produção. Guarde o número do pedido."),
+            Object.assign(S.el("a", "p-btn", "Voltar à loja"), { href: "/" }));
+          box.classList.add("is-paid"); return;
+        }
+        if (d.status === "cancelled") { status.textContent = "Este Pix expirou ou foi cancelado. Gere um novo pedido para continuar."; return; }
+      } catch (_) { /* tenta de novo */ }
+      if (tries < 180) setTimeout(tick, document.hidden ? 15000 : 6000);
+      else status.textContent = "Ainda não recebemos a confirmação. Se você já pagou, ela pode levar alguns minutos.";
+    };
+    setTimeout(tick, 6000);
   }
 
   // ---------- Início ----------

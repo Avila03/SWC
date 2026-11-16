@@ -3,6 +3,7 @@
 (() => {
   "use strict";
   const CART_KEY = "swc.cart.v1";
+  const CATALOG_KEY = "swc.catalog.v2";
   const SIZE_ORDER = ["PP", "P", "M", "G", "GG", "XG", "XGG", "EG", "EGG"];
   const COLOR_HEX = {
     "preto": "#111111", "branco": "#F2F0EC", "offwhite": "#ECE5D6", "off-white": "#ECE5D6",
@@ -49,12 +50,23 @@
 
     fetchCatalog() {
       if (!catalogPromise) {
-        catalogPromise = fetch("/api/catalog", { cache: "no-store" })
+        const shape = data => ({
+          collections: Array.isArray(data.collections) ? data.collections : [],
+          products: (data.products || []).filter(p => p && typeof p.id === "string" && typeof p.name === "string" &&
+            Number.isSafeInteger(p.priceCents) && p.priceCents > 0 && Array.isArray(p.variants))
+        });
+        const network = () => fetch("/api/catalog")
           .then(r => { if (!r.ok) throw new Error("catalog_http"); return r.json(); })
-          .then(data => ({
-            collections: Array.isArray(data.collections) ? data.collections : [],
-            products: (data.products || []).filter(p => p && typeof p.id === "string" && Number.isSafeInteger(p.priceCents) && Array.isArray(p.variants))
-          }));
+          .then(data => {
+            const shaped = shape(data);
+            // Só guarda catálogo completo (com variantes da Gubo); vale 5 minutos nesta aba.
+            if (data.source === "gubo") { try { sessionStorage.setItem(CATALOG_KEY, JSON.stringify({ t: Date.now(), d: shaped })); } catch (_) { /* ok */ } }
+            return shaped;
+          });
+        let cached = null;
+        try { const c = JSON.parse(sessionStorage.getItem(CATALOG_KEY) || "null"); if (c && Date.now() - c.t < 300000) cached = c.d; } catch (_) { /* ok */ }
+        catalogPromise = cached ? Promise.resolve(cached) : network();
+        catalogPromise.catch(() => { catalogPromise = null; });
       }
       return catalogPromise;
     },
@@ -79,5 +91,21 @@
     }
   };
   window.SWC = SWC;
-  document.addEventListener("DOMContentLoaded", SWC.updateBagCount);
+  function initChrome() {
+    SWC.updateBagCount();
+    // Menu no celular
+    const btn = document.querySelector(".g-menu"), nav = document.getElementById("g-nav");
+    if (btn && nav) {
+      const set = open => {
+        nav.classList.toggle("open", open); btn.setAttribute("aria-expanded", String(open));
+        btn.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
+      };
+      btn.addEventListener("click", () => set(!nav.classList.contains("open")));
+      nav.addEventListener("click", e => { if (e.target.closest("a")) set(false); });
+      document.addEventListener("keydown", e => { if (e.key === "Escape" && nav.classList.contains("open")) { set(false); btn.focus(); } });
+    }
+  }
+  // Sacola alterada em outra aba
+  window.addEventListener("storage", e => { if (e.key === CART_KEY) SWC.updateBagCount(); });
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initChrome); else initChrome();
 })();
