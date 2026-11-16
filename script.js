@@ -194,7 +194,7 @@
     const byColor = product.imagesByColor && typeof product.imagesByColor === "object" ? product.imagesByColor : null;
     const setFor = color => {
       const set = byColor && (byColor[color] || byColor[product.defaultColor] || Object.values(byColor)[0]);
-      if (set) return { list: [set.back, set.front].filter(Boolean), labels: ["Costas", "Frente"], own: true };
+      if (set) return { list: [set.back, set.front].filter(Boolean), labels: ["Costas", "Frente"], own: false };
       return { list: (product.images || []).filter(src => typeof src === "string"), labels: ["Frente", "Costas"], own: false };
     };
     let renderToken = 0;
@@ -242,45 +242,25 @@
     details.append(sheet);
     details.append(element("p", "product-price", money(product.priceCents)));
     if (product.description) details.append(element("p", "product-description", product.description));
-    const controls = element("div", "product-controls");
-    if (!variants.length) {
-      controls.append(element("p", "product-prelaunch", "Produto temporariamente indisponível"));
-      const disabled = element("button", "add-btn product-disabled", "Indisponível");
-      disabled.type = "button";
-      disabled.disabled = true;
-      controls.append(disabled);
-      renderPhotos(product.defaultColor);
-    } else {
-      const label = element("label", "product-variant-label", "Cor e tamanho");
-      const selector = element("select", "product-variant");
-      selector.setAttribute("aria-label", "Escolha cor e tamanho de " + product.name);
-      variants.forEach(variant => {
-        const option = document.createElement("option");
-        option.value = variant.sku;
-        option.textContent = [variant.color,variant.size].filter(Boolean).join(" / ") || variant.sku;
-        selector.append(option);
-      });
-      label.append(selector);
-      // Começa na cor padrão da peça (tamanho M quando houver) e troca a foto ao mudar a cor.
-      const preferred = variants.filter(v => v.color === product.defaultColor);
-      const start = preferred.find(v => v.size === "M") || preferred[0];
-      if (start) selector.value = start.sku;
-      const colorOf = () => (variants.find(v => v.sku === selector.value) || {}).color;
-      let shownColor = colorOf();
-      selector.addEventListener("change", () => {
-        const color = colorOf();
-        if (color !== shownColor) { shownColor = color; renderPhotos(color); }
-      });
-      renderPhotos(shownColor);
-      const add = element("button", "add-btn", "Adicionar à sacola +");
-      add.type = "button";
-      add.addEventListener("click", () => {
-        const variant = variants.find(v => v.sku === selector.value);
-        if (variant) addToCart(product,variant);
-      });
-      controls.append(label,add);
-    }
-    info.append(details,controls);
+    // Escolha de cor e tamanho acontece na página da peça.
+    const href = "./produto.html?p=" + encodeURIComponent(product.id);
+    const colorList = [...new Set(variants.map(v => v.color).filter(Boolean))];
+    if (product.defaultColor && colorList.includes(product.defaultColor)) colorList.splice(colorList.indexOf(product.defaultColor), 1), colorList.unshift(product.defaultColor);
+    const HEX = { "preto": "#111111", "branco": "#F2F0EC", "verde musgo": "#3F4A2A", "cinza": "#8E8E8E", "marrom": "#5B4030", "offwhite": "#ECE5D6" };
+    const cta = element("div", "card-cta");
+    const dots = element("span", "card-dots");
+    dots.setAttribute("aria-label", colorList.length ? "Cores: " + colorList.join(", ") : "");
+    colorList.slice(0, 6).forEach(c => { const i = element("i"); i.style.setProperty("--sw", HEX[c.toLowerCase()] || "#777"); i.title = c; dots.append(i); });
+    const go = element("a", "g-link", variants.length ? "Ver peça →" : "Em breve");
+    go.href = href;
+    go.setAttribute("aria-label", "Ver a peça " + product.name);
+    cta.append(dots, go);
+    const titleLink = details.querySelector("h3");
+    if (titleLink) { const a = element("a", "card-link"); a.href = href; a.append(titleLink.cloneNode(true)); titleLink.replaceWith(a); }
+    info.append(details, cta);
+    renderPhotos(colorList[0] || product.defaultColor);
+    visual.addEventListener("click", () => { location.href = href; });
+    visual.style.cursor = "pointer";
     card.append(visual,info);
     card.dataset.collection = product.collection || "";
     return card;
@@ -462,7 +442,7 @@
     }
   }
 
-  $("#open-bag").addEventListener("click",showBag);
+  $("#open-bag").addEventListener("click",() => { location.href = "./checkout.html"; });
   $("#close-bag").addEventListener("click",hideBag);
   els.overlay.addEventListener("click",hideBag);
   $("#keep-exploring").addEventListener("click",hideBag);
