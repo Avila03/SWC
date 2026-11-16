@@ -179,45 +179,53 @@
     const visual = element("div", "product-visual visual-tee");
     const number = "Nº " + String(index + 1).padStart(2, "0");
     visual.append(element("span", "product-label", number));
-    const sources = (product.images || []).filter(src => typeof src === "string");
-    // Peça como obra: 1ª imagem que carregar = frente; a seguinte = costas (aparece ao passar o mouse).
+    // Fotos: por cor (fotos próprias da SWC, costas primeiro) ou a lista geral (Gubo).
     const load = src => new Promise(resolve => {
       const probe = new Image();
       probe.onload = () => resolve(probe.naturalWidth > 0);
       probe.onerror = () => resolve(false);
       probe.src = src;
     });
-    const firstLoaded = async from => {
-      for (let i = from; i < sources.length; i++) if (await load(sources[i])) return i;
-      return -1;
-    };
     const photo = (src, cls, alt) => {
       const img = document.createElement("img");
       img.className = cls; img.src = src; img.alt = alt; img.decoding = "async";
       return img;
     };
-    const showFallback = () => {
-      visual.classList.add("no-photo");
-      visual.append(element("p", "product-no-photo", "Imagem em breve"));
+    const byColor = product.imagesByColor && typeof product.imagesByColor === "object" ? product.imagesByColor : null;
+    const setFor = color => {
+      const set = byColor && (byColor[color] || byColor[product.defaultColor] || Object.values(byColor)[0]);
+      if (set) return { list: [set.back, set.front].filter(Boolean), labels: ["Costas", "Frente"], own: true };
+      return { list: (product.images || []).filter(src => typeof src === "string"), labels: ["Frente", "Costas"], own: false };
     };
-    if (!sources.length) showFallback();
-    else {
-      (async () => {
-        const front = await firstLoaded(0);
-        if (front < 0) { showFallback(); return; }
-        const stage = element("div", "product-stage");
-        stage.append(photo(sources[front], "product-photo", "Frente da peça " + product.name));
-        const back = await firstLoaded(front + 1);
-        if (back >= 0) {
-          stage.append(photo(sources[back], "product-photo product-photo-back", "Costas da peça " + product.name));
-          visual.classList.add("has-back");
-          visual.append(element("span", "product-flip-hint", "Passe o mouse · costas"));
-        }
-        const reflex = photo(sources[front], "product-reflex", "");
+    let renderToken = 0;
+    const renderPhotos = async color => {
+      const token = ++renderToken;
+      const { list, labels, own } = setFor(color);
+      const loaded = [];
+      for (const src of list) { if (loaded.length >= 2) break; if (await load(src)) loaded.push(src); }
+      if (token !== renderToken) return;
+      visual.querySelectorAll(".product-stage,.product-reflex,.product-flip-hint,.product-no-photo").forEach(el => el.remove());
+      visual.classList.remove("has-back", "no-photo", "own-photo");
+      if (!loaded.length) {
+        visual.classList.add("no-photo");
+        visual.append(element("p", "product-no-photo", "Imagem em breve"));
+        return;
+      }
+      if (own) visual.classList.add("own-photo");
+      const stage = element("div", "product-stage");
+      stage.append(photo(loaded[0], "product-photo", labels[0] + " da peça " + product.name + (color ? " (" + color + ")" : "")));
+      if (loaded[1]) {
+        stage.append(photo(loaded[1], "product-photo product-photo-back", labels[1] + " da peça " + product.name + (color ? " (" + color + ")" : "")));
+        visual.classList.add("has-back");
+        visual.append(element("span", "product-flip-hint", "Passe o mouse · " + labels[1].toLowerCase()));
+      }
+      visual.append(stage);
+      if (!own) {
+        const reflex = photo(loaded[0], "product-reflex", "");
         reflex.setAttribute("aria-hidden", "true");
-        visual.append(stage, reflex);
-      })();
-    }
+        visual.append(reflex);
+      }
+    };
     const info = element("div", "product-info");
     const details = element("div", "product-details");
     details.append(element("span", "product-number", number + " · " + String(collectionName || "SWC").toUpperCase()));
@@ -241,6 +249,7 @@
       disabled.type = "button";
       disabled.disabled = true;
       controls.append(disabled);
+      renderPhotos(product.defaultColor);
     } else {
       const label = element("label", "product-variant-label", "Cor e tamanho");
       const selector = element("select", "product-variant");
@@ -252,6 +261,17 @@
         selector.append(option);
       });
       label.append(selector);
+      // Começa na cor padrão da peça (tamanho M quando houver) e troca a foto ao mudar a cor.
+      const preferred = variants.filter(v => v.color === product.defaultColor);
+      const start = preferred.find(v => v.size === "M") || preferred[0];
+      if (start) selector.value = start.sku;
+      const colorOf = () => (variants.find(v => v.sku === selector.value) || {}).color;
+      let shownColor = colorOf();
+      selector.addEventListener("change", () => {
+        const color = colorOf();
+        if (color !== shownColor) { shownColor = color; renderPhotos(color); }
+      });
+      renderPhotos(shownColor);
       const add = element("button", "add-btn", "Adicionar à sacola +");
       add.type = "button";
       add.addEventListener("click", () => {

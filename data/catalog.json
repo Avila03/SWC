@@ -37,14 +37,32 @@
       "category": "Camisetas Oversized",
       "description": "",
       "priceCents": 14990,
-      "images": [],
+      "images": [
+        "/assets/pecas/triade-x-verso/preto-costas.webp",
+        "/assets/pecas/triade-x-verso/preto-frente.webp"
+      ],
       "active": true,
       "variants": [],
       "source": "gubo-studio",
       "productLinkStatus": "pending",
       "guboProductCode": "P261111511",
       "collection": "especimes",
-      "priceStatus": "provisional"
+      "priceStatus": "provisional",
+      "defaultColor": "Preto",
+      "imagesByColor": {
+        "Preto": {
+          "back": "/assets/pecas/triade-x-verso/preto-costas.webp",
+          "front": "/assets/pecas/triade-x-verso/preto-frente.webp"
+        },
+        "Branco": {
+          "back": "/assets/pecas/triade-x-verso/branco-costas.webp",
+          "front": "/assets/pecas/triade-x-verso/branco-frente.webp"
+        },
+        "Verde Musgo": {
+          "back": "/assets/pecas/triade-x-verso/verde-musgo-costas.webp",
+          "front": "/assets/pecas/triade-x-verso/verde-musgo-frente.webp"
+        }
+      }
     },
     {
       "id": "pantano",

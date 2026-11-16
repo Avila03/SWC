@@ -82,6 +82,16 @@ function collections() {
     .filter(c=>c&&typeof c.id==="string"&&typeof c.name==="string")
     .map(c=>({id:c.id,name:c.name,status:c.status==="soon"?"soon":"open"}));
 }
+// Fotos próprias por cor: { "Preto": { back, front } }. Só caminhos locais ou https.
+function imagesByColor(map) {
+  if (!map || typeof map !== "object" || Array.isArray(map)) return null;
+  const out = {};
+  for (const [color, set] of Object.entries(map).slice(0, 12)) {
+    const back = safeImage(set?.back), front = safeImage(set?.front);
+    if (back || front) out[String(color).slice(0, 40)] = { back, front };
+  }
+  return Object.keys(out).length ? out : null;
+}
 function localProduct(p) {
   return {
     id:p.id,name:p.name,category:p.category||"SWC",
@@ -89,6 +99,8 @@ function localProduct(p) {
     images:(p.images||[]).map(safeImage).filter(Boolean).slice(0,8),
     variants:[],variantStatus:"pending",
     collection:typeof p.collection==="string"?p.collection:null,
+    defaultColor:typeof p.defaultColor==="string"?p.defaultColor.slice(0,40):null,
+    imagesByColor:imagesByColor(p.imagesByColor),
     source:"swc"
   };
 }
