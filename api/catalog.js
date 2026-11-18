@@ -101,6 +101,7 @@ function localProduct(p) {
     collection:typeof p.collection==="string"?p.collection:null,
     defaultColor:typeof p.defaultColor==="string"?p.defaultColor.slice(0,40):null,
     imagesByColor:imagesByColor(p.imagesByColor),
+    lookbook:safeImage(p.lookbook),
     source:"swc"
   };
 }
@@ -140,7 +141,7 @@ module.exports = async function handler(req,res) {
     }
     const products = configured.map(p=>{
       // A loja mantém nome e preço. A Gubo fornece imagens e variantes de produção.
-      const match = (p.guboProductCode && byCode.get(String(p.guboProductCode))) || byName.get(normalize(p.name));
+      const match = p.guboProductCode ? byCode.get(String(p.guboProductCode)) : byName.get(normalize(p.name));
       const variants = match ? (variantsByCode.get(String(match.codigo))||[]) : [];
       const own = (p.images||[]).map(safeImage).filter(Boolean);
       const remote = match ? guboImages(match) : [];

@@ -58,7 +58,7 @@
 
     function renderGallery() {
       const back = S.photo(product, state.color, "back"), front = S.photo(product, state.color, "front");
-      const views = [["back", "Costas", back], ["front", "Frente", front]].filter(v => v[2]);
+      const views = [["back", "Costas", back], ["front", "Frente", front], ["look", "Conjunto", product.lookbook]].filter(v => v[2]);
       const uniq = views.filter((v, i) => views.findIndex(w => w[2] === v[2]) === i);
       if (!uniq.find(v => v[0] === state.side)) state.side = uniq[0]?.[0] || "back";
       const current = uniq.find(v => v[0] === state.side);
@@ -66,6 +66,7 @@
         main.hidden = reflex.hidden = false; empty.hidden = true;
         main.onerror = () => { main.hidden = reflex.hidden = true; empty.hidden = false; };
         main.src = current[2]; reflex.src = current[2];
+        stage.classList.toggle("is-look", current[0] === "look");
         main.alt = current[1] + " da peça " + product.name + " na cor " + state.color;
         stage.classList.remove("swap"); void stage.offsetWidth; stage.classList.add("swap");
       } else { main.hidden = reflex.hidden = true; empty.hidden = false; }
@@ -169,9 +170,17 @@
 
     $("#produto").replaceChildren(gallery, info);
     renderChoices(); renderGallery();
+    const comingSoon = !product.variants.length;
+    if (comingSoon) {
+      sizeBlock.hidden = true; buy.hidden = true;
+      sheet.querySelectorAll("dt").forEach(dt => { if (dt.textContent === "Tamanhos") { dt.nextElementSibling.remove(); dt.remove(); } });
+      const soonNote = S.el("p", "p-soon", "Em breve na loja. A peça já está pronta e entra à venda no próximo lançamento.");
+      buy.after(soonNote);
+    }
 
     // Barra de compra fixa no celular: aparece quando o botão principal sai da tela.
     const bar = S.el("div", "p-sticky"); bar.hidden = true;
+    if (comingSoon) bar.classList.add("is-off");
     const barText = S.el("div"); barText.append(S.el("strong", "", product.name), S.el("span", "", S.money(product.priceCents)));
     const barBtn = S.el("button", "p-btn", "Adicionar"); barBtn.type = "button";
     barBtn.addEventListener("click", () => {

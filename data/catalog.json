@@ -6,10 +6,6 @@
       "name": "Espécimes"
     },
     {
-      "id": "colecao-01",
-      "name": "Oversized Verde Musgo"
-    },
-    {
       "id": "colecao-02",
       "name": "Coleção 02",
       "status": "soon"
@@ -17,33 +13,15 @@
   ],
   "products": [
     {
-      "id": "sombra-viva",
-      "name": "Sombra Viva",
+      "id": "triade-x-verso",
+      "name": "Tríade — X Verso",
       "category": "Camisetas Oversized",
       "description": "",
       "priceCents": 14990,
       "images": [],
       "active": true,
       "variants": [],
-      "source": "gubo-studio",
-      "productLinkStatus": "pending",
-      "guboProductCode": "P261111513",
-      "collection": "especimes",
-      "priceStatus": "provisional"
-    },
-    {
-      "id": "triade-x-verso",
-      "name": "Tríade — X Verso",
-      "category": "Camisetas Oversized",
-      "description": "",
-      "priceCents": 14990,
-      "images": [
-        "/assets/pecas/triade-x-verso/preto-costas.webp",
-        "/assets/pecas/triade-x-verso/preto-frente.webp"
-      ],
-      "active": true,
-      "variants": [],
-      "source": "gubo-studio",
+      "source": "swc",
       "productLinkStatus": "pending",
       "guboProductCode": "P261111511",
       "collection": "especimes",
@@ -65,13 +43,130 @@
       }
     },
     {
+      "id": "sombra-viva",
+      "name": "Sombra Viva",
+      "category": "Camisetas Oversized",
+      "description": "",
+      "priceCents": 14990,
+      "priceStatus": "provisional",
+      "images": [],
+      "active": true,
+      "variants": [],
+      "source": "swc",
+      "collection": "especimes",
+      "defaultColor": "Preto",
+      "imagesByColor": {
+        "Preto": {
+          "back": "/assets/pecas/sombra-viva/preto-costas.webp",
+          "front": "/assets/pecas/sombra-viva/preto-frente.webp"
+        },
+        "Branco": {
+          "back": "/assets/pecas/sombra-viva/branco-costas.webp",
+          "front": "/assets/pecas/sombra-viva/branco-frente.webp"
+        },
+        "Verde Musgo": {
+          "back": "/assets/pecas/sombra-viva/verde-musgo-costas.webp",
+          "front": "/assets/pecas/sombra-viva/verde-musgo-frente.webp"
+        }
+      },
+      "guboProductCode": "ES - Sombra",
+      "lookbook": "/assets/pecas/sombra-viva/conjunto.webp"
+    },
+    {
+      "id": "simbionte",
+      "name": "Simbionte",
+      "category": "Camisetas Oversized",
+      "description": "",
+      "priceCents": 14990,
+      "priceStatus": "provisional",
+      "images": [],
+      "active": true,
+      "variants": [],
+      "source": "swc",
+      "collection": "especimes",
+      "defaultColor": "Preto",
+      "imagesByColor": {
+        "Preto": {
+          "back": "/assets/pecas/simbionte/preto-costas.webp",
+          "front": "/assets/pecas/simbionte/preto-frente.webp"
+        },
+        "Branco": {
+          "back": "/assets/pecas/simbionte/branco-costas.webp",
+          "front": "/assets/pecas/simbionte/branco-frente.webp"
+        },
+        "Verde Musgo": {
+          "back": "/assets/pecas/simbionte/verde-musgo-costas.webp",
+          "front": "/assets/pecas/simbionte/verde-musgo-frente.webp"
+        }
+      },
+      "guboProductCode": "ES - Simbionte"
+    },
+    {
+      "id": "fogo-selvagem",
+      "name": "Fogo Selvagem",
+      "category": "Camisetas Oversized",
+      "description": "",
+      "priceCents": 14990,
+      "priceStatus": "provisional",
+      "images": [],
+      "active": true,
+      "variants": [],
+      "source": "swc",
+      "collection": "especimes",
+      "defaultColor": "Preto",
+      "imagesByColor": {
+        "Preto": {
+          "back": "/assets/pecas/fogo-selvagem/preto-costas.webp",
+          "front": "/assets/pecas/fogo-selvagem/preto-frente.webp"
+        },
+        "Branco": {
+          "back": "/assets/pecas/fogo-selvagem/branco-costas.webp",
+          "front": "/assets/pecas/fogo-selvagem/branco-frente.webp"
+        },
+        "Verde Musgo": {
+          "back": "/assets/pecas/fogo-selvagem/verde-musgo-costas.webp",
+          "front": "/assets/pecas/fogo-selvagem/verde-musgo-frente.webp"
+        }
+      },
+      "lookbook": "/assets/pecas/fogo-selvagem/conjunto.webp"
+    },
+    {
+      "id": "pantano-vivo",
+      "name": "Pântano Vivo",
+      "category": "Camisetas Oversized",
+      "description": "",
+      "priceCents": 14990,
+      "priceStatus": "provisional",
+      "images": [],
+      "active": true,
+      "variants": [],
+      "source": "swc",
+      "collection": "especimes",
+      "defaultColor": "Preto",
+      "imagesByColor": {
+        "Preto": {
+          "back": "/assets/pecas/pantano-vivo/preto-costas.webp",
+          "front": "/assets/pecas/pantano-vivo/preto-frente.webp"
+        },
+        "Branco": {
+          "back": "/assets/pecas/pantano-vivo/branco-costas.webp",
+          "front": "/assets/pecas/pantano-vivo/branco-frente.webp"
+        },
+        "Verde Musgo": {
+          "back": "/assets/pecas/pantano-vivo/verde-musgo-costas.webp",
+          "front": "/assets/pecas/pantano-vivo/verde-musgo-frente.webp"
+        }
+      },
+      "lookbook": "/assets/pecas/pantano-vivo/conjunto.webp"
+    },
+    {
       "id": "pantano",
       "name": "pantano",
       "category": "Camisetas",
       "description": "",
       "priceCents": 14990,
       "images": [],
-      "active": true,
+      "active": false,
       "variants": [],
       "source": "gubo-studio",
       "productLinkStatus": "pending",
@@ -85,7 +180,7 @@
       "description": "",
       "priceCents": 14990,
       "images": [],
-      "active": true,
+      "active": false,
       "variants": [],
       "source": "gubo-studio",
       "productLinkStatus": "pending",

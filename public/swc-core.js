@@ -85,7 +85,9 @@
       return (product.images || [])[side === "front" ? 1 : 0] || (product.images || [])[0] || null;
     },
     colorsOf(product) {
-      const colors = [...new Set((product.variants || []).map(v => v.color).filter(Boolean))];
+      let colors = [...new Set((product.variants || []).map(v => v.color).filter(Boolean))];
+      // Peça ainda sem variantes na Gubo: usa as cores das fotos.
+      if (!colors.length && product.imagesByColor) colors = Object.keys(product.imagesByColor);
       const d = product.defaultColor;
       return d && colors.includes(d) ? [d, ...colors.filter(c => c !== d)] : colors;
     }
