@@ -157,7 +157,8 @@
           "front": "/assets/pecas/pantano-vivo/verde-musgo-frente.webp"
         }
       },
-      "lookbook": "/assets/pecas/pantano-vivo/conjunto.webp"
+      "lookbook": "/assets/pecas/pantano-vivo/conjunto.webp",
+      "guboProductCode": "ES - Pântano Vivo"
     },
     {
       "id": "pantano",
